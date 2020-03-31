@@ -271,15 +271,22 @@
    (Posicion ?i1 ?j1 ?jugador)
    (Posicion ?i2 ?j2 ?jugador)
    (Conectado ?i1 ?j1 ?forma ?i2 ?j2)
-   (test (neq ?jugador " "))
    =>
-   (printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " " ?jugador crlf)
-   (assert (Enlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador))
+   (printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 crlf)
+   (assert (Enlinea ?forma ?i1 ?j1 ?i2 ?j2))
 )
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;B2
+(defrule dos_en_linea
+   (Posicion ?i1 ?j1 ?jugador)
+   (Posicion ?i2 ?j2 ?jugador)
+   (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
+   (test (neq ?jugador " "))
+   =>
+   (printout t "Dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " " ?jugador crlf)
+   (assert (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador))
+)
 
 
 
