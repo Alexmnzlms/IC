@@ -271,6 +271,7 @@
    (Posicion ?i1 ?j1 ?jugador)
    (Posicion ?i2 ?j2 ?jugador)
    (Conectado ?i1 ?j1 ?forma ?i2 ?j2)
+   (test (eq ?jugador " "))
    =>
    (printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 crlf)
    (assert (Enlinea ?forma ?i1 ?j1 ?i2 ?j2))
@@ -279,6 +280,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;B2
 (defrule dos_en_linea
+   (declare (salience 1))
    (Posicion ?i1 ?j1 ?jugador)
    (Posicion ?i2 ?j2 ?jugador)
    (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
