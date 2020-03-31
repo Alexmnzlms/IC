@@ -271,8 +271,9 @@
    (Posicion ?i1 ?j1 ?jugador)
    (Posicion ?i2 ?j2 ?jugador)
    (Conectado ?i1 ?j1 ?forma ?i2 ?j2)
+   (test (neq ?jugador " "))
    =>
-   (printout t "En linea " ?forma ?i1 ?j1 ?i2 ?j2 ?jugador crlf)
+   (printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " " ?jugador crlf)
    (assert (Enlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador))
 )
 
