@@ -290,11 +290,16 @@
    (assert (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador))
 )
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;B3
-
+(defrule puede_ganar
+   (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador)
+   (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
+   (Posicion ?i3 ?j3 " ")
+   =>
+   (printout t "Puede ganar " ?jugador " " ?i3 ?j3 crlf)
+   (assert (Puedeganar ?jugador ?i3 ?j3))
+)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
