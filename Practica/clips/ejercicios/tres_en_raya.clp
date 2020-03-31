@@ -290,6 +290,18 @@
    (assert (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador))
 )
 
+(defrule dos_en_linea_chek
+   (declare (salience 1))
+   ?f <- (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador)
+   (Posicion ?i1 ?j1 ?jugador1)
+   (Posicion ?i2 ?j2 ?jugador2)
+   (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
+   (test (neq ?jugador1 ?jugador2))
+   =>
+   (printout t "Ya no dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " " ?jugador crlf)
+   (retract ?f)
+)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;B3
 (defrule puede_ganar
