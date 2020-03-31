@@ -263,4 +263,4 @@
 (printout t ?jugador " ha ganado pues tiene tres en raya " ?i1 ?j1 " " ?i2 ?j2 " " ?i3 ?j3 crlf)
 (retract ?f)
 (assert (muestra_posicion))
-) 
+) /
