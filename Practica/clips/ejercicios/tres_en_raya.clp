@@ -304,13 +304,26 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;B3
-(defrule puede_ganar
+(defrule puede_ganar_movimiento
    (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Posicion ?i3 ?j3 " ")
+   (Posicion ?i4 ?j4 ?jugador)
+   (test (or (neq ?i1 ?i4) (neq ?j1 ?j4)))
+   (test (or (neq ?i2 ?i4) (neq ?j2 ?j4)))
    =>
-   (printout t "Puede ganar " ?jugador " " ?i3 ?j3 crlf)
-   (assert (Puedeganar ?jugador ?i3 ?j3))
+   (printout t "Puede ganar " ?jugador " moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   (assert (Puedeganar ?jugador ?i4 ?j4 ?i3 ?j3))
+)
+
+(defrule puede_ganar_movimiento_check
+   ?f <- (Puedeganar ?jugador1 ?i2 ?j2 ?i1 ?j1)
+   (Posicion ?i1 ?j1 ?jugador2)
+   (test (neq ?jugador1 ?jugador2))
+   (test (neq ?jugador2 " "))
+   =>
+   (printout t "Ya no puede ganar " ?jugador1 " moviendo " ?i2 ?j2 " a " ?i1 ?j1 crlf)
+   (retract ?f)
 )
 
 
