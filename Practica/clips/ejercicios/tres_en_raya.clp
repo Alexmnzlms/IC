@@ -272,6 +272,7 @@
    (Posicion ?i1 ?j1 " ")
    (Posicion ?i2 ?j2 " ")
    (Conectado ?i1 ?j1 ?forma ?i2 ?j2)
+   (not(Enlinea ?forma ?i1 ?j1 ?i2 ?j2))
    =>
    (printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 crlf)
    (assert (Enlinea ?forma ?i1 ?j1 ?i2 ?j2))
@@ -292,7 +293,7 @@
    (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Posicion ?i3 ?j3 " ")
-   (not(Todas_fichas_en_tablero x))
+   (not(Todas_fichas_en_tablero X))
    =>
    (printout t "Puede ganar X poniendo en " ?i3 ?j3 crlf)
    (assert (Puedeganarponer ?i3 ?j3))
@@ -339,6 +340,7 @@
    (declare (salience 1))
    ?f <- (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
    =>
+   (printout t "No dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
    (retract ?f)
 )
 
@@ -346,6 +348,7 @@
    (declare (salience 1))
    ?f <- (Puedeganarponer ?i3 ?j3)
    =>
+   (printout t "No puede ganar X poniendo en " ?i3 ?j3 crlf)
    (retract ?f)
 )
 
@@ -353,6 +356,7 @@
    (declare (salience 1))
    ?f <- (Puedeganarmov ?i4 ?j4 ?i3 ?j3)
    =>
+   (printout t "Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
    (retract ?f)
 )
 
@@ -363,7 +367,7 @@
    (Puedeganarponer ?i ?j)
    ?g<- (Posicion ?i ?j " ")
    =>
-   (printout t "Juego poner ficha en " ?i ?j crlf)
+   (printout t "Juego para ganar poner ficha en " ?i ?j crlf)
    (retract ?f ?g)
    (assert (Posicion ?i ?j X) (Turno O) (reducir_fichas_sin_colocar X))
 )
@@ -375,9 +379,31 @@
    (Puedeganarmov ?origen_i ?origen_j ?destino_i ?destino_j)
    =>
    (assert (Juega X ?origen_i ?origen_j ?destino_i ?destino_j))
-   (printout t "Juego mover la ficha de "  ?origen_i ?origen_j " a " ?destino_i ?destino_j crlf)
+   (printout t "Juego para ganar mover la ficha de "  ?origen_i ?origen_j " a " ?destino_i ?destino_j crlf)
    (retract ?f)
 )
 
+(defrule clisp_juega_molestar_fichas_sin_colocar
+   (declare (salience 5))
+   ?f<- (Turno X)
+   (Fichas_sin_colocar X ?n)
+   (Puedeganarenemigoponer ?i ?j)
+   ?g<- (Posicion ?i ?j " ")
+   =>
+   (printout t "Juego para molestar poner ficha en " ?i ?j crlf)
+   (retract ?f ?g)
+   (assert (Posicion ?i ?j X) (Turno O) (reducir_fichas_sin_colocar X))
+)
+
+(defrule clisp_juega_molestar
+   (declare (salience 5))
+   ?f<- (Turno X)
+   (Todas_fichas_en_tablero X)
+   (Puedeganarenemigomov ?origen_i ?origen_j ?destino_i ?destino_j)
+   =>
+   (assert (Juega X ?origen_i ?origen_j ?destino_i ?destino_j))
+   (printout t "Juego para molestar mover la ficha de "  ?origen_i ?origen_j " a " ?destino_i ?destino_j crlf)
+   (retract ?f)
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
