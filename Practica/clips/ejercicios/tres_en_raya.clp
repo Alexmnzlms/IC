@@ -312,6 +312,21 @@
    (assert (Puedeganarmov ?i4 ?j4 ?i3 ?j3))
 )
 
+(defrule puede_ganar_movimiento_hueco
+   (declare (salience 10))
+   (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
+   (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
+   (Posicion ?i2 ?j2 " ")
+   (Posicion ?i1 ?j1 X)
+   (Posicion ?i3 ?j3 X)
+   (Posicion ?i4 ?j4 X)
+   (Enlinea ?forma1 ?i2 ?j2 ?i4 ?j4)
+   (test (neq ?forma ?forma1))
+   =>
+   (printout t "Puede ganar hueco X moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
+   (assert (Puedeganarmov ?i4 ?j4 ?i2 ?j2))
+)
+
 (defrule puede_ganar_enemigo_poner
    (declare (salience 10))
    (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 O)
@@ -336,6 +351,21 @@
    (assert (Puedeganarenemigomov ?i4 ?j4 ?i3 ?j3))
 )
 
+(defrule puede_ganar_enemigo_movimiento_hueco
+   (declare (salience 10))
+   (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
+   (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
+   (Posicion ?i2 ?j2 " ")
+   (Posicion ?i1 ?j1 O)
+   (Posicion ?i3 ?j3 O)
+   (Posicion ?i4 ?j4 O)
+   (Enlinea ?forma1 ?i2 ?j2 ?i4 ?j4)
+   (test (neq ?forma ?forma1))
+   =>
+   (printout t "Puede ganar hueco O moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
+   (assert (Puedeganarenemigomov ?i4 ?j4 ?i2 ?j2))
+)
+
 (defrule limpiar_dos_en_linea
    (declare (salience 1))
    ?f <- (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
@@ -356,7 +386,7 @@
    (declare (salience 1))
    ?f <- (Puedeganarmov ?i4 ?j4 ?i3 ?j3)
    =>
-   (printout t "Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   (printout t "No Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
    (retract ?f)
 )
 
@@ -400,8 +430,11 @@
    ?f<- (Turno X)
    (Todas_fichas_en_tablero X)
    (Puedeganarenemigomov ?origen_i ?origen_j ?destino_i ?destino_j)
+   (Enlinea ?forma ?i ?j ?destino_i ?destino_j)
+   (Posicion ?destino_i ?destino_j " ")
+   (Posicion ?i ?j X)
    =>
-   (assert (Juega X ?origen_i ?origen_j ?destino_i ?destino_j))
+   (assert (Juega X ?i ?j ?destino_i ?destino_j))
    (printout t "Juego para molestar mover la ficha de "  ?origen_i ?origen_j " a " ?destino_i ?destino_j crlf)
    (retract ?f)
 )
