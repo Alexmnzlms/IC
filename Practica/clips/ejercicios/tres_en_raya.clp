@@ -322,6 +322,7 @@
    (Posicion ?i4 ?j4 X)
    (Enlinea ?forma1 ?i2 ?j2 ?i4 ?j4)
    (test (neq ?forma ?forma1))
+   (test (or (neq ?i1 ?i3) (neq ?j1 ?j3)))
    =>
    (printout t "Puede ganar hueco X moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
    (assert (Puedeganarmov ?i4 ?j4 ?i2 ?j2))
@@ -361,6 +362,7 @@
    (Posicion ?i4 ?j4 O)
    (Enlinea ?forma1 ?i2 ?j2 ?i4 ?j4)
    (test (neq ?forma ?forma1))
+   (test (or (neq ?i1 ?i3) (neq ?j1 ?j3)))
    =>
    (printout t "Puede ganar hueco O moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
    (assert (Puedeganarenemigomov ?i4 ?j4 ?i2 ?j2))
