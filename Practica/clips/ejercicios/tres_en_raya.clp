@@ -266,64 +266,73 @@
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;B1
+;Ejercicios
+
 (defrule en_linea
-   (Posicion ?i1 ?j1 ?jugador)
-   (Posicion ?i2 ?j2 ?jugador)
+   (Posicion ?i1 ?j1 " ")
+   (Posicion ?i2 ?j2 " ")
    (Conectado ?i1 ?j1 ?forma ?i2 ?j2)
-   (test (eq ?jugador " "))
    =>
    (printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 crlf)
    (assert (Enlinea ?forma ?i1 ?j1 ?i2 ?j2))
 )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;B2
 (defrule dos_en_linea
    (declare (salience 1))
-   (Posicion ?i1 ?j1 ?jugador)
-   (Posicion ?i2 ?j2 ?jugador)
+   (Posicion ?i1 ?j1 X)
+   (Posicion ?i2 ?j2 X)
    (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
-   (test (neq ?jugador " "))
    =>
-   (printout t "Dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " " ?jugador crlf)
-   (assert (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador))
+   (printout t "Dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
+   (assert (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X))
 )
 
-(defrule dos_en_linea_chek
+(defrule puede_ganar_poner
    (declare (salience 1))
-   ?f <- (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador)
-   (Posicion ?i1 ?j1 ?jugador1)
-   (Posicion ?i2 ?j2 ?jugador2)
-   (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
-   (test (neq ?jugador1 ?jugador2))
-   =>
-   (printout t "Ya no dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " " ?jugador crlf)
-   (retract ?f)
-)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;B3
-(defrule puede_ganar_movimiento
-   (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 ?jugador)
+   (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Posicion ?i3 ?j3 " ")
-   (Posicion ?i4 ?j4 ?jugador)
-   (test (or (neq ?i1 ?i4) (neq ?j1 ?j4)))
-   (test (or (neq ?i2 ?i4) (neq ?j2 ?j4)))
+   (not(Todas_fichas_en_tablero x))
    =>
-   (printout t "Puede ganar " ?jugador " moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
-   (assert (Puedeganar ?jugador ?i4 ?j4 ?i3 ?j3))
+   (printout t "Puede ganar X poniendo en " ?i3 ?j3 crlf)
+   (assert (Puedeganarponer ?i3 ?j3))
 )
 
-(defrule puede_ganar_movimiento_check
-   ?f <- (Puedeganar ?jugador1 ?i2 ?j2 ?i1 ?j1)
-   (Posicion ?i1 ?j1 ?jugador2)
-   (test (neq ?jugador1 ?jugador2))
-   (test (neq ?jugador2 " "))
+(defrule puede_ganar_movimiento
+   (declare (salience 1))
+   (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
+   (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
+   (Enlinea ?forma1 ?i3 ?j3 ?i4 ?j4)
+   (Posicion ?i3 ?j3 " ")
+   (Posicion ?i4 ?j4 X)
+   (test (neq ?forma ?forma1))
    =>
-   (printout t "Ya no puede ganar " ?jugador1 " moviendo " ?i2 ?j2 " a " ?i1 ?j1 crlf)
-   (retract ?f)
+   (printout t "Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   (assert (Puedeganarmov ?i4 ?j4 ?i3 ?j3))
+)
+
+(defrule puede_ganar_enemigo_poner
+   (declare (salience 1))
+   (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 O)
+   (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
+   (Posicion ?i3 ?j3 " ")
+   (not(Todas_fichas_en_tablero O))
+   =>
+   (printout t "Puede ganar O poniendo en " ?i3 ?j3 crlf)
+   (assert (Puedeganarenemigoponer ?i3 ?j3))
+)
+
+(defrule puede_ganar_enemigo_movimiento
+   (declare (salience 1))
+   (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 O)
+   (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
+   (Enlinea ?forma1 ?i3 ?j3 ?i4 ?j4)
+   (Posicion ?i3 ?j3 " ")
+   (Posicion ?i4 ?j4 O)
+   (test (neq ?forma ?forma1))
+   =>
+   (printout t "Puede ganar O moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   (assert (Puedeganarenemigomov ?i4 ?j4 ?i3 ?j3))
 )
 
 
