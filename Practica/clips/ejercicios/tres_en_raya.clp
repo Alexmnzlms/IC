@@ -92,6 +92,7 @@
    (printout t "   -      -      -" crlf)
    (printout t "3 |" ?p31 "| -- |" ?p32 "| -- |" ?p33 "|"crlf)
    (printout t "   -      -      -" crlf)
+   (printout t crlf)
 )
 
 (defrule muestra_posicion_turno_jugador
@@ -280,6 +281,7 @@
 
 (defrule dos_en_linea
    (declare (salience 10))
+   (Turno X)
    (Posicion ?i1 ?j1 X)
    (Posicion ?i2 ?j2 X)
    (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
@@ -290,6 +292,7 @@
 
 (defrule puede_ganar_poner
    (declare (salience 10))
+   (Turno X)
    (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Posicion ?i3 ?j3 " ")
@@ -301,6 +304,7 @@
 
 (defrule puede_ganar_movimiento
    (declare (salience 10))
+   (Turno X)
    (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Enlinea ?forma1 ?i3 ?j3 ?i4 ?j4)
@@ -314,6 +318,7 @@
 
 (defrule puede_ganar_movimiento_hueco
    (declare (salience 10))
+   (Turno X)
    (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Posicion ?i2 ?j2 " ")
@@ -329,7 +334,8 @@
 )
 
 (defrule puede_ganar_enemigo_poner
-   (declare (salience 10))
+   (declare (salience 9))
+   (Turno O)
    (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 O)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Posicion ?i3 ?j3 " ")
@@ -340,7 +346,8 @@
 )
 
 (defrule puede_ganar_enemigo_movimiento
-   (declare (salience 10))
+   (declare (salience 9))
+   (Turno O)
    (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 O)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Enlinea ?forma1 ?i3 ?j3 ?i4 ?j4)
@@ -353,7 +360,8 @@
 )
 
 (defrule puede_ganar_enemigo_movimiento_hueco
-   (declare (salience 10))
+   (declare (salience 9))
+   (Turno O)
    (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
    (Enlinea ?forma ?i2 ?j2 ?i3 ?j3)
    (Posicion ?i2 ?j2 " ")
@@ -366,30 +374,6 @@
    =>
    (printout t "Puede ganar hueco O moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
    (assert (Puedeganarenemigomov ?i4 ?j4 ?i2 ?j2))
-)
-
-(defrule limpiar_dos_en_linea
-   (declare (salience 1))
-   ?f <- (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
-   =>
-   (printout t "No dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
-   (retract ?f)
-)
-
-(defrule limpiar_puede_ganar_poner
-   (declare (salience 1))
-   ?f <- (Puedeganarponer ?i3 ?j3)
-   =>
-   (printout t "No puede ganar X poniendo en " ?i3 ?j3 crlf)
-   (retract ?f)
-)
-
-(defrule limpiar_puede_ganar_movimiento
-   (declare (salience 1))
-   ?f <- (Puedeganarmov ?i4 ?j4 ?i3 ?j3)
-   =>
-   (printout t "No Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
-   (retract ?f)
 )
 
 (defrule clisp_juega_fichas_sin_colocar
@@ -416,7 +400,7 @@
 )
 
 (defrule clisp_juega_molestar_fichas_sin_colocar
-   (declare (salience 5))
+   (declare (salience 4))
    ?f<- (Turno X)
    (Fichas_sin_colocar X ?n)
    (Puedeganarenemigoponer ?i ?j)
@@ -428,7 +412,7 @@
 )
 
 (defrule clisp_juega_molestar
-   (declare (salience 5))
+   (declare (salience 4))
    ?f<- (Turno X)
    (Todas_fichas_en_tablero X)
    (Puedeganarenemigomov ?origen_i ?origen_j ?destino_i ?destino_j)
@@ -437,8 +421,31 @@
    (Posicion ?i ?j X)
    =>
    (assert (Juega X ?i ?j ?destino_i ?destino_j))
-   (printout t "Juego para molestar mover la ficha de "  ?origen_i ?origen_j " a " ?destino_i ?destino_j crlf)
+   (printout t "Juego para molestar mover la ficha de "  ?i ?j " a " ?destino_i ?destino_j crlf)
    (retract ?f)
 )
 
+(defrule limpiar_dos_en_linea
+   (declare (salience 1))
+   ?f <- (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
+   =>
+   (printout t "No dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
+   (retract ?f)
+)
+
+(defrule limpiar_puede_ganar_poner
+   (declare (salience 1))
+   ?f <- (Puedeganarponer ?i3 ?j3)
+   =>
+   (printout t "No puede ganar X poniendo en " ?i3 ?j3 crlf)
+   (retract ?f)
+)
+
+(defrule limpiar_puede_ganar_movimiento
+   (declare (salience 1))
+   ?f <- (Puedeganarmov ?i4 ?j4 ?i3 ?j3)
+   =>
+   (printout t "No Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   (retract ?f)
+)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
