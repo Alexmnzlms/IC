@@ -20,103 +20,107 @@
 (defrule Primera_pregunta
    =>
    (printout t "Te gustan las mates? (si/regular/no)" crlf)
-   (assert (Gusta mates (read)))
+   (assert (Gusta mates (read)) (pregunta 1))
 )
 
 (defrule Segunda_pregunta
    =>
    (printout t "Te gusta programar? (si/regular/no)" crlf)
-   (assert (Gusta programar (read)))
+   (assert (Gusta programar (read)) (pregunta 2))
 )
 
 (defrule Tercera_pregunta
    =>
    (printout t "Te gusta las bases de datos? (si/regular/no)" crlf)
-   (assert (Gusta bases_de_datos (read)))
+   (assert (Gusta bases_de_datos (read)) (pregunta 3))
 )
 
 (defrule Cuarta_pregunta
    =>
    (printout t "Te gusta el hardware? (si/regular/no)" crlf)
-   (assert (Gusta hardware (read)))
+   (assert (Gusta hardware (read)) (pregunta 4))
 )
 
 (defrule Quinta_pregunta
    =>
    (printout t "Te gusta la docencia? (si/regular/no)" crlf)
-   (assert (Gusta docencia (read)))
+   (assert (Gusta docencia (read)) (pregunta 5))
 )
 
 (defrule Sexta_pregunta
    =>
    (printout t "Te gusta las informatica relacionada con web? (si/regular/no)" crlf)
-   (assert (Gusta web (read)))
+   (assert (Gusta web (read)) (pregunta 6))
 )
 
 (defrule Septima_pregunta
    =>
    (printout t "Te gusta la administracion de sistemas? (si/regular/no)" crlf)
-   (assert (Gusta sistemas (read)))
+   (assert (Gusta sistemas (read)) (pregunta 7))
 )
 
 (defrule Octava_pregunta
    =>
    (printout t "Te gustan los videojuegos? (si/regular/no)" crlf)
-   (assert (Gusta videojuegos (read)))
+   (assert (Gusta videojuegos (read)) (pregunta 8))
 )
 
 (defrule Novena_pregunta
    =>
    (printout t "Te gustan la robotica? (si/regular/no)" crlf)
-   (assert (Gusta robotica (read)))
+   (assert (Gusta robotica (read)) (pregunta 9))
 )
 
 (defrule Decima_pregunta
    =>
    (printout t "Te gustan las redes (internet)? (si/regular/no)" crlf)
-   (assert (Gusta red (read)))
+   (assert (Gusta red (read)) (pregunta 10))
 )
 
 (defrule Gusta_mates_si
    (declare (salience 1))
    ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
    ?g <- (Gusta mates si)
+   ?q <- (pregunta 1)
    =>
    (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 5)))
    (printout t "Consejo CSI " ?i crlf)
-   (retract ?f ?g)
+   (retract ?f ?g ?q)
 )
 
 (defrule Gusta_mates_regular
    (declare (salience 1))
    ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
    ?g <- (Gusta mates regular)
+   ?q <- (pregunta 1)
    =>
    (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 2)))
    (printout t "Consejo CSI " ?i crlf)
-   (retract ?f ?g)
+   (retract ?f ?g ?q)
 )
 
 (defrule Gusta_programar_si
    (declare (salience 1))
    ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
-   ?h <- (Consejo Ingenieria_del_Software ?j)
-   ?g <- (Gusta mates si)
+   ?g <- (Consejo Ingenieria_del_Software ?j)
+   (Gusta programar si)
+   ?q <- (pregunta 2)
    =>
    (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 5)) (Consejo Ingenieria_del_Software (+ ?j 5)))
    (printout t "Consejo CSI " ?i crlf)
    (printout t "Consejo IS " ?j crlf)
-   (retract ?f ?h ?g)
+   (retract ?f ?g ?q)
 )
 
 (defrule Gusta_programar_regular
    (declare (salience 1))
    ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
-   ?h <- (Consejo Ingenieria_del_Software ?j)
-   ?g <- (Gusta mates si)
+   ?g <- (Consejo Ingenieria_del_Software ?j)
+   (Gusta programar regular)
+   ?q <- (pregunta 2)
    =>
    (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 5)) (Consejo Ingenieria_del_Software (+ ?j 5)))
    (printout t "Consejo CSI " ?i crlf)
    (printout t "Consejo IS " ?j crlf)
-   (retract ?f ?h ?g)
+   (retract ?f ?g ?q)
 )
