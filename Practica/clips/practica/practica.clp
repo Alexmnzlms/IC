@@ -7,11 +7,11 @@
 )
 
 (deffacts Consejos
-(Consejo Computacion_y_Sistemas_Inteligentes 0)
-(Consejo Ingenieria_del_Software 0)
-(Consejo Ingenieria_de_Computadores 0)
-(Consejo Sistemas_de_Informacion 0)
-(Consejo Tecnologias_de_la_Informacion 0)
+(Consejo CSI 0)
+(Consejo IS 0)
+(Consejo IC 0)
+(Consejo SI 0)
+(Consejo TI 0)
 )
 
 ;;;;  El experto utiliza la calificación media obtenida, tomando valores de Alta, Media
@@ -79,48 +79,50 @@
 
 (defrule Gusta_mates_si
    (declare (salience 1))
-   ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
+   ?f <- (Consejo CSI ?i)
    ?g <- (Gusta mates si)
    ?q <- (pregunta 1)
    =>
-   (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 5)))
-   (printout t "Consejo CSI " ?i crlf)
+   (assert (Consejo CSI (+ ?i 5)))
    (retract ?f ?g ?q)
 )
 
 (defrule Gusta_mates_regular
    (declare (salience 1))
-   ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
+   ?f <- (Consejo CSI ?i)
    ?g <- (Gusta mates regular)
    ?q <- (pregunta 1)
    =>
-   (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 2)))
-   (printout t "Consejo CSI " ?i crlf)
+   (assert (Consejo CSI (+ ?i 2)))
    (retract ?f ?g ?q)
 )
 
 (defrule Gusta_programar_si
    (declare (salience 1))
-   ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
-   ?g <- (Consejo Ingenieria_del_Software ?j)
+   ?f <- (Consejo CSI ?i)
+   ?g <- (Consejo IS ?j)
    (Gusta programar si)
    ?q <- (pregunta 2)
    =>
-   (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 5)) (Consejo Ingenieria_del_Software (+ ?j 5)))
-   (printout t "Consejo CSI " ?i crlf)
-   (printout t "Consejo IS " ?j crlf)
+   (assert (Consejo CSI (+ ?i 5)) (Consejo IS (+ ?j 5)))
    (retract ?f ?g ?q)
 )
 
 (defrule Gusta_programar_regular
    (declare (salience 1))
-   ?f <- (Consejo Computacion_y_Sistemas_Inteligentes ?i)
-   ?g <- (Consejo Ingenieria_del_Software ?j)
+   ?f <- (Consejo CSI ?i)
+   ?g <- (Consejo IS ?j)
    (Gusta programar regular)
    ?q <- (pregunta 2)
    =>
-   (assert (Consejo Computacion_y_Sistemas_Inteligentes (+ ?i 5)) (Consejo Ingenieria_del_Software (+ ?j 5)))
-   (printout t "Consejo CSI " ?i crlf)
-   (printout t "Consejo IS " ?j crlf)
+   (assert (Consejo CSI (+ ?i 2)) (Consejo IS (+ ?j 2)))
    (retract ?f ?g ?q)
+)
+
+(defrule Consejos
+   (declare (salience 100))
+   (Consejo ?r ?p)
+   =>
+   (printout t "Consejo " ?r " " ?p crlf)
+
 )
