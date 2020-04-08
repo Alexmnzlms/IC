@@ -14,71 +14,101 @@
 (Consejo TI 0)
 )
 
+(deffacts Relaciones
+(Relacion mates CSI)
+(Relacion programar CSI)
+(Relacion programar IS)
+(Relacion bases_de_datos SI)
+(Relacion hardware IC)
+(Relacion docencia CSI)
+(Relacion docencia SI)
+(Relacion web IS)
+(Relacion web TI)
+(Relacion sistemas IC)
+(Relacion sistemas SI)
+(Relacion videojuegos IS)
+(Relacion robotica CSI)
+(Relacion robotica IC)
+(Relacion red TI)
+
+)
+
+
 ;;;;  El experto utiliza la calificación media obtenida, tomando valores de Alta, Media
 ;;;;  o Baja, y se representa por (Calificacion_media Alta|Media|Baja)
 
 (defrule Primera_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gustan las mates? (si/regular/no)" crlf)
-   (assert (Gusta mates (read)) (pregunta 1))
+   (assert (Gusta mates (read)) (pregunta 1) (terminar))
 )
 
 (defrule Segunda_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gusta programar? (si/regular/no)" crlf)
-   (assert (Gusta programar (read)) (pregunta 2))
+   (assert (Gusta programar (read)) (pregunta 2) (terminar))
 )
 
 (defrule Tercera_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gusta las bases de datos? (si/regular/no)" crlf)
-   (assert (Gusta bases_de_datos (read)) (pregunta 3))
+   (assert (Gusta bases_de_datos (read)) (pregunta 3) (terminar))
 )
 
 (defrule Cuarta_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gusta el hardware? (si/regular/no)" crlf)
-   (assert (Gusta hardware (read)) (pregunta 4))
+   (assert (Gusta hardware (read)) (pregunta 4) (terminar))
 )
 
 (defrule Quinta_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gusta la docencia? (si/regular/no)" crlf)
-   (assert (Gusta docencia (read)) (pregunta 5))
+   (assert (Gusta docencia (read)) (pregunta 5) (terminar))
 )
 
 (defrule Sexta_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gusta las informatica relacionada con web? (si/regular/no)" crlf)
-   (assert (Gusta web (read)) (pregunta 6))
+   (assert (Gusta web (read)) (pregunta 6) (terminar))
 )
 
 (defrule Septima_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gusta la administracion de sistemas? (si/regular/no)" crlf)
-   (assert (Gusta sistemas (read)) (pregunta 7))
+   (assert (Gusta sistemas (read)) (pregunta 7) (terminar))
 )
 
 (defrule Octava_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gustan los videojuegos? (si/regular/no)" crlf)
-   (assert (Gusta videojuegos (read)) (pregunta 8))
+   (assert (Gusta videojuegos (read)) (pregunta 8) (terminar))
 )
 
 (defrule Novena_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gustan la robotica? (si/regular/no)" crlf)
-   (assert (Gusta robotica (read)) (pregunta 9))
+   (assert (Gusta robotica (read)) (pregunta 9) (terminar))
 )
 
 (defrule Decima_pregunta
+   (not (terminado si))
    =>
    (printout t "Te gustan las redes (internet)? (si/regular/no)" crlf)
-   (assert (Gusta red (read)) (pregunta 10) (final))
+   (assert (Gusta red (read)) (pregunta 10) (terminado si))
 )
 
 (defrule Gusta_mates_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    (Gusta mates si)
    ?q <- (pregunta 1)
@@ -88,7 +118,7 @@
 )
 
 (defrule Gusta_mates_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    (Gusta mates regular)
    ?q <- (pregunta 1)
@@ -98,7 +128,7 @@
 )
 
 (defrule Gusta_programar_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    ?g <- (Consejo IS ?j)
    (Gusta programar si)
@@ -109,7 +139,7 @@
 )
 
 (defrule Gusta_programar_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    ?g <- (Consejo IS ?j)
    (Gusta programar regular)
@@ -120,7 +150,7 @@
 )
 
 (defrule Gusta_bd_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo SI ?i)
    (Gusta bases_de_datos si)
    ?q <- (pregunta 3)
@@ -130,7 +160,7 @@
 )
 
 (defrule Gusta_bd_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo SI ?i)
    (Gusta bases_de_datos regular)
    ?q <- (pregunta 3)
@@ -140,7 +170,7 @@
 )
 
 (defrule Gusta_hardware_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IC ?i)
    (Gusta hardware si)
    ?q <- (pregunta 4)
@@ -150,7 +180,7 @@
 )
 
 (defrule Gusta_hardware_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IC ?i)
    (Gusta hardware regular)
    ?q <- (pregunta 4)
@@ -160,7 +190,7 @@
 )
 
 (defrule Gusta_docencia_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    ?g <- (Consejo SI ?j)
    (Gusta docencia si)
@@ -171,7 +201,7 @@
 )
 
 (defrule Gusta_docencia_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    ?g <- (Consejo SI ?j)
    (Gusta docencia regular)
@@ -182,7 +212,7 @@
 )
 
 (defrule Gusta_web_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IS ?i)
    ?g <- (Consejo TI ?j)
    (Gusta web si)
@@ -193,7 +223,7 @@
 )
 
 (defrule Gusta_web_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IS ?i)
    ?g <- (Consejo TI ?j)
    (Gusta web regular)
@@ -204,7 +234,7 @@
 )
 
 (defrule Gusta_sistemas_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IC ?i)
    ?g <- (Consejo SI ?j)
    (Gusta sistemas si)
@@ -215,7 +245,7 @@
 )
 
 (defrule Gusta_sistemas_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IC ?i)
    ?g <- (Consejo SI ?j)
    (Gusta sistemas regular)
@@ -226,7 +256,7 @@
 )
 
 (defrule Gusta_videojuegos_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IS ?i)
    (Gusta videojuegos si)
    ?q <- (pregunta 8)
@@ -236,7 +266,7 @@
 )
 
 (defrule Gusta_videojuegos_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo IS ?i)
    (Gusta videojuegos regular)
    ?q <- (pregunta 8)
@@ -246,7 +276,7 @@
 )
 
 (defrule Gusta_robotica_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    ?g <- (Consejo IC ?j)
    (Gusta robotica si)
@@ -257,7 +287,7 @@
 )
 
 (defrule Gusta_robotica_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo CSI ?i)
    ?g <- (Consejo IC ?j)
    (Gusta robotica regular)
@@ -268,7 +298,7 @@
 )
 
 (defrule Gusta_red_si
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo TI ?i)
    (Gusta red si)
    ?q <- (pregunta 10)
@@ -278,7 +308,7 @@
 )
 
 (defrule Gusta_red_regular
-   (declare (salience 1))
+   (declare (salience 10))
    ?f <- (Consejo TI ?i)
    (Gusta red regular)
    ?q <- (pregunta 10)
@@ -287,19 +317,34 @@
    (retract ?f ?q)
 )
 
-(defrule Consejos
-   (declare (salience 100))
-   (Consejo ?r ?p)
-   =>
-   (printout t "Consejo " ?r " " ?p crlf)
-
-)
-
 (defrule Consejos_final
-   (declare (salience -100))
+   (declare (salience 100))
    (final)
    (Consejo ?r ?p)
    =>
    (printout t "Consejo Final " ?r " " ?p crlf)
+)
 
+(defrule Motivos
+   (declare (salience 90))
+   (final)
+   (Gusta ?m ?n)
+   =>
+   (printout t "Te gusta " ?m " " ?n crlf)
+)
+
+(defrule Preguntar_Final
+   (declare (salience 1))
+   ?f <- (terminar)
+   =>
+   (printout t "¿Has terminado? (si/no)" crlf)
+   (assert (terminado (read)))
+   (retract ?f)
+)
+
+(defrule Terminar
+   (declare (salience 100))
+   (terminado si)
+   =>
+   (assert (final))
 )
