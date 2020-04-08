@@ -252,7 +252,7 @@
    (Gusta robotica si)
    ?q <- (pregunta 9)
    =>
-   (assert (Consejo IC (+ ?i 5)) (Consejo CSI (+ ?j 5)))
+   (assert (Consejo CSI (+ ?i 5)) (Consejo IC (+ ?j 5)))
    (retract ?f ?g ?q)
 )
 
@@ -263,24 +263,24 @@
    (Gusta robotica regular)
    ?q <- (pregunta 9)
    =>
-   (assert (Consejo IC (+ ?i 2)) (Consejo CSI (+ ?j 2)))
+   (assert (Consejo CSI (+ ?i 2)) (Consejo IC (+ ?j 2)))
    (retract ?f ?g ?q)
 )
 
-(defrule Gusta_redes_si
+(defrule Gusta_red_si
    (declare (salience 1))
    ?f <- (Consejo TI ?i)
-   (Gusta redes si)
+   (Gusta red si)
    ?q <- (pregunta 10)
    =>
    (assert (Consejo TI (+ ?i 5)))
    (retract ?f ?q)
 )
 
-(defrule Gusta_redes_regular
+(defrule Gusta_red_regular
    (declare (salience 1))
    ?f <- (Consejo TI ?i)
-   (Gusta redes regular)
+   (Gusta red regular)
    ?q <- (pregunta 10)
    =>
    (assert (Consejo TI (+ ?i 2)))
@@ -296,10 +296,10 @@
 )
 
 (defrule Consejos_final
-   (declare (salience 100))
+   (declare (salience -100))
    (final)
    (Consejo ?r ?p)
    =>
-   (printout t "Consejo " ?r " " ?p crlf)
+   (printout t "Consejo Final " ?r " " ?p crlf)
 
 )
