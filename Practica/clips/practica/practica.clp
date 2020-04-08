@@ -267,11 +267,7 @@
    (retract ?f ?g ?q)
 )
 
-<<<<<<< HEAD
 (defrule Gusta_redes_si
-=======
-(defrule Gusta_red_si
->>>>>>> cb984d6490998819de173849c44030c8ebd76ac3
    (declare (salience 1))
    ?f <- (Consejo TI ?i)
    (Gusta redes si)
@@ -281,11 +277,7 @@
    (retract ?f ?q)
 )
 
-<<<<<<< HEAD
 (defrule Gusta_redes_regular
-=======
-(defrule Gusta_videojuegos_regular
->>>>>>> cb984d6490998819de173849c44030c8ebd76ac3
    (declare (salience 1))
    ?f <- (Consejo TI ?i)
    (Gusta redes regular)
