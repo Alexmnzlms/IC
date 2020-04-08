@@ -74,27 +74,27 @@
 (defrule Decima_pregunta
    =>
    (printout t "Te gustan las redes (internet)? (si/regular/no)" crlf)
-   (assert (Gusta red (read)) (pregunta 10))
+   (assert (Gusta red (read)) (pregunta 10) (final))
 )
 
 (defrule Gusta_mates_si
    (declare (salience 1))
    ?f <- (Consejo CSI ?i)
-   ?g <- (Gusta mates si)
+   (Gusta mates si)
    ?q <- (pregunta 1)
    =>
    (assert (Consejo CSI (+ ?i 5)))
-   (retract ?f ?g ?q)
+   (retract ?f ?q)
 )
 
 (defrule Gusta_mates_regular
    (declare (salience 1))
    ?f <- (Consejo CSI ?i)
-   ?g <- (Gusta mates regular)
+   (Gusta mates regular)
    ?q <- (pregunta 1)
    =>
    (assert (Consejo CSI (+ ?i 2)))
-   (retract ?f ?g ?q)
+   (retract ?f ?q)
 )
 
 (defrule Gusta_programar_si
@@ -119,8 +119,37 @@
    (retract ?f ?g ?q)
 )
 
+(defrule Gusta_bd_si
+   (declare (salience 1))
+   ?f <- (Consejo SI ?i)
+   (Gusta bases_de_datos si)
+   ?q <- (pregunta 3)
+   =>
+   (assert (Consejo SI (+ ?i 5)))
+   (retract ?f ?q)
+)
+
+(defrule Gusta_bd_regular
+   (declare (salience 1))
+   ?f <- (Consejo SI ?i)
+   (Gusta bases_de_datos regular)
+   ?q <- (pregunta 3)
+   =>
+   (assert (Consejo SI (+ ?i 2)))
+   (retract ?f ?q)
+)
+
 (defrule Consejos
    (declare (salience 100))
+   (Consejo ?r ?p)
+   =>
+   (printout t "Consejo " ?r " " ?p crlf)
+
+)
+
+(defrule Consejos_final
+   (declare (salience 100))
+   (final)
    (Consejo ?r ?p)
    =>
    (printout t "Consejo " ?r " " ?p crlf)
