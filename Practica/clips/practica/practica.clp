@@ -29,7 +29,7 @@
 (Relacion videojuegos IS)
 (Relacion robotica CSI)
 (Relacion robotica IC)
-(Relacion red TI)
+(Relacion red TI  )
 
 )
 
@@ -317,21 +317,21 @@
    (retract ?f ?q)
 )
 
-(defrule Consejos_final
-   (declare (salience 100))
-   (final)
-   (Consejo ?r ?p)
-   =>
-   (printout t "Consejo Final " ?r " " ?p crlf)
-)
+;(defrule Consejos_final
+;   (declare (salience 100))
+;   (final)
+;   (Consejo ?r ?p)
+;   =>
+;   (printout t "Consejo Final " ?r " " ?p crlf)
+;)
 
-(defrule Motivos
-   (declare (salience 90))
-   (final)
-   (Gusta ?m ?n)
-   =>
-   (printout t "Te gusta " ?m " " ?n crlf)
-)
+;(defrule Motivos
+;   (declare (salience 90))
+;   (final)
+;   (Gusta ?m ?n)
+;   =>
+;   (printout t "Te gusta " ?m " " ?n crlf)
+;)
 
 (defrule Preguntar_Final
    (declare (salience 1))
@@ -347,4 +347,26 @@
    (terminado si)
    =>
    (assert (final))
+)
+
+(defrule Aconsejo
+   (declare (salience 100))
+   (final)
+   (Consejo ?r ?p)
+   (test (neq ?p 0))
+   (Relacion ?m ?r)
+   (Gusta ?m si)
+   =>
+   (printout t "Te recomiendo " ?r " porque te gusta " ?m crlf)
+)
+
+(defrule Aconsejo_regular
+   (declare (salience 90))
+   (final)
+   (Consejo ?r ?p)
+   (test (neq ?p 0))
+   (Relacion ?m ?r)
+   (Gusta ?m regular)
+   =>
+   (printout t "Tambien te recomiendo " ?r " porque te gusta regular " ?m crlf)
 )
