@@ -275,7 +275,7 @@
    (Conectado ?i1 ?j1 ?forma ?i2 ?j2)
    (not(Enlinea ?forma ?i1 ?j1 ?i2 ?j2))
    =>
-   (printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 crlf)
+   ;(printout t "En linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 crlf)
    (assert (Enlinea ?forma ?i1 ?j1 ?i2 ?j2))
 )
 
@@ -286,7 +286,7 @@
    (Posicion ?i2 ?j2 X)
    (Enlinea ?forma ?i1 ?j1 ?i2 ?j2)
    =>
-   (printout t "Dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
+   ;(printout t "Dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
    (assert (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X))
 )
 
@@ -298,7 +298,7 @@
    (Posicion ?i3 ?j3 " ")
    (not(Todas_fichas_en_tablero X))
    =>
-   (printout t "Puede ganar X poniendo en " ?i3 ?j3 crlf)
+   ;(printout t "Puede ganar X poniendo en " ?i3 ?j3 crlf)
    (assert (Puedeganarponer ?i3 ?j3))
 )
 
@@ -312,7 +312,7 @@
    (Posicion ?i4 ?j4 X)
    (test (neq ?forma ?forma1))
    =>
-   (printout t "Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   ;(printout t "Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
    (assert (Puedeganarmov ?i4 ?j4 ?i3 ?j3))
 )
 
@@ -329,7 +329,7 @@
    (test (neq ?forma ?forma1))
    (test (or (neq ?i1 ?i3) (neq ?j1 ?j3)))
    =>
-   (printout t "Puede ganar hueco X moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
+   ;(printout t "Puede ganar hueco X moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
    (assert (Puedeganarmov ?i4 ?j4 ?i2 ?j2))
 )
 
@@ -341,7 +341,7 @@
    (Posicion ?i3 ?j3 " ")
    (not(Todas_fichas_en_tablero O))
    =>
-   (printout t "Puede ganar O poniendo en " ?i3 ?j3 crlf)
+   ;(printout t "Puede ganar O poniendo en " ?i3 ?j3 crlf)
    (assert (Puedeganarenemigoponer ?i3 ?j3))
 )
 
@@ -355,7 +355,7 @@
    (Posicion ?i4 ?j4 O)
    (test (neq ?forma ?forma1))
    =>
-   (printout t "Puede ganar O moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   ;(printout t "Puede ganar O moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
    (assert (Puedeganarenemigomov ?i4 ?j4 ?i3 ?j3))
 )
 
@@ -372,7 +372,7 @@
    (test (neq ?forma ?forma1))
    (test (or (neq ?i1 ?i3) (neq ?j1 ?j3)))
    =>
-   (printout t "Puede ganar hueco O moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
+   ;(printout t "Puede ganar hueco O moviendo " ?i4 ?j4 " a " ?i2 ?j2 crlf)
    (assert (Puedeganarenemigomov ?i4 ?j4 ?i2 ?j2))
 )
 
@@ -383,7 +383,7 @@
    (Puedeganarponer ?i ?j)
    ?g<- (Posicion ?i ?j " ")
    =>
-   (printout t "Juego para ganar poner ficha en " ?i ?j crlf)
+   ;(printout t "Juego para ganar poner ficha en " ?i ?j crlf)
    (retract ?f ?g)
    (assert (Posicion ?i ?j X) (Turno O) (reducir_fichas_sin_colocar X))
 )
@@ -395,7 +395,7 @@
    (Puedeganarmov ?origen_i ?origen_j ?destino_i ?destino_j)
    =>
    (assert (Juega X ?origen_i ?origen_j ?destino_i ?destino_j))
-   (printout t "Juego para ganar mover la ficha de "  ?origen_i ?origen_j " a " ?destino_i ?destino_j crlf)
+   ;(printout t "Juego para ganar mover la ficha de "  ?origen_i ?origen_j " a " ?destino_i ?destino_j crlf)
    (retract ?f)
 )
 
@@ -406,7 +406,7 @@
    (Puedeganarenemigoponer ?i ?j)
    ?g<- (Posicion ?i ?j " ")
    =>
-   (printout t "Juego para molestar poner ficha en " ?i ?j crlf)
+   ;(printout t "Juego para molestar poner ficha en " ?i ?j crlf)
    (retract ?f ?g)
    (assert (Posicion ?i ?j X) (Turno O) (reducir_fichas_sin_colocar X))
 )
@@ -421,7 +421,7 @@
    (Posicion ?i ?j X)
    =>
    (assert (Juega X ?i ?j ?destino_i ?destino_j))
-   (printout t "Juego para molestar mover la ficha de "  ?i ?j " a " ?destino_i ?destino_j crlf)
+   ;(printout t "Juego para molestar mover la ficha de "  ?i ?j " a " ?destino_i ?destino_j crlf)
    (retract ?f)
 )
 
@@ -429,7 +429,7 @@
    (declare (salience 1))
    ?f <- (Dosenlinea ?forma ?i1 ?j1 ?i2 ?j2 X)
    =>
-   (printout t "No dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
+   ;(printout t "No dos en linea " ?forma " " ?i1 ?j1 " " ?i2 ?j2 " X" crlf)
    (retract ?f)
 )
 
@@ -437,7 +437,7 @@
    (declare (salience 1))
    ?f <- (Puedeganarponer ?i3 ?j3)
    =>
-   (printout t "No puede ganar X poniendo en " ?i3 ?j3 crlf)
+   ;(printout t "No puede ganar X poniendo en " ?i3 ?j3 crlf)
    (retract ?f)
 )
 
@@ -445,7 +445,7 @@
    (declare (salience 1))
    ?f <- (Puedeganarmov ?i4 ?j4 ?i3 ?j3)
    =>
-   (printout t "No Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
+   ;(printout t "No Puede ganar X moviendo " ?i4 ?j4 " a " ?i3 ?j3 crlf)
    (retract ?f)
 )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
