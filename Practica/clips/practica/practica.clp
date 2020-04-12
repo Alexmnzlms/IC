@@ -1,3 +1,4 @@
+;;;; Representamos las posibles ramas a recomendar.
 (deffacts Ramas
 (Rama Computacion_y_Sistemas_Inteligentes)
 (Rama Ingenieria_del_Software)
@@ -6,6 +7,7 @@
 (Rama Tecnologias_de_la_Informacion)
 )
 
+;;;; Establecemos el nivel de consejo de cada Rama.
 (deffacts Consejos
 (Consejo CSI 0)
 (Consejo IS 0)
@@ -14,6 +16,8 @@
 (Consejo TI 0)
 )
 
+;;;; Establecemos la relación entre el tema que se pregunta y la rama a la que el
+;;;; tema hace referencia.
 (deffacts Relaciones
 (Relacion mates CSI)
 (Relacion programar CSI)
@@ -33,9 +37,14 @@
 
 )
 
-
-;;;;  El experto utiliza la calificación media obtenida, tomando valores de Alta, Media
-;;;;  o Baja, y se representa por (Calificacion_media Alta|Media|Baja)
+;;;; El sistema hace una serie de preguntas al usuario, para conocer su grado de
+;;;; en los temas que corresponden a las ramas.
+;;;; Por cada pregunta, el sistema almacena la informacion que ha
+;;;; obtenido del usuario de la siguiente manera:
+;;;; Si ha repondido que le gustan las mates, el sistema registra el hecho
+;;;; (Gusta mates si)
+;;;; Y si ha respondido que le gusta la regular programar registra
+;;;;(Gusta programar regular)
 
 (defrule Primera_pregunta
    (not (terminado si))
@@ -106,6 +115,13 @@
    (printout t "Te gustan las redes (internet)? (si/regular/no)" crlf)
    (assert (Gusta red (read)) (pregunta 10) (terminado si))
 )
+
+;;;; Una vez ha registrado los intereses del usuario, razona que puntuacion debe
+;;;; darle a cada recomendación en función del grado de interes que ha mostrado
+;;;; el usuario por cada tema. Cada tema se relaciona con una rama, por lo que
+;;;; responder si o regular, aumenta el nivel de recomendación de la rama
+;;;; relacionada con el tema.
+;;;; +5 si el tema le gusta, +2 si le gusta regular.
 
 (defrule Gusta_mates_si
    (declare (salience 10))
@@ -317,21 +333,10 @@
    (retract ?f ?q)
 )
 
-;(defrule Consejos_final
-;   (declare (salience 100))
-;   (final)
-;   (Consejo ?r ?p)
-;   =>
-;   (printout t "Consejo Final " ?r " " ?p crlf)
-;)
-
-;(defrule Motivos
-;   (declare (salience 90))
-;   (final)
-;   (Gusta ?m ?n)
-;   =>
-;   (printout t "Te gusta " ?m " " ?n crlf)
-;)
+;;;; Se ha añadido la caracteristica de que al detectar una alta puntuacion para
+;;;; recomendar una rama, respecto a la puntuación total que puede obtener,
+;;;; el sistema pare de preguntar y recomiende la rama que considera mas adecuada
+;;;; en base a la puntuación.
 
 (defrule CSI_max
    (declare (salience 10))
@@ -388,6 +393,8 @@
    (retract ?f)
 )
 
+;;;; Cada vez que se ha respondido al usuario, el sistema pregunta si ha terminado
+;;;; y por tanto si quiere recibir una recomendación con la informacion actual.
 
 (defrule Preguntar_Final
    (declare (salience 1))
@@ -398,12 +405,16 @@
    (retract ?f)
 )
 
+;;;; Regla que define cuando se ha terminado de preguntar
+
 (defrule Terminar
    (declare (salience 100))
    (terminado si)
    =>
    (assert (final))
 )
+
+;;;; Estas regla muestran los motivos por los cuales se recomienda una rama.
 
 (defrule Aconsejo
    (declare (salience 100))
