@@ -1,0 +1,32 @@
+Para poder recomendar una rama determinada se ha establecido la siguiente manera
+ de obtener conocimiento del usuario.
+Se han establecido distintos temas referentes a distintas ramas:
+- Matemáticas se asocia a la rama de CSI.
+- Programar se asocia a las ramas de CSI e IS.
+- Las bases de datos se asocian con la rama de SI.
+- El hardware se asocia con la rama de IC.
+- La docencia se asocia con las ramas de CSI y SI.
+- La programación web se asocia con las ramas de IS y TI.
+- La administración de sistemas se asocia con las ramas de IC y SI.
+- Los videojuegos se asocian con la rama de IS.
+- La robotica se asocia con las ramas de CSI e IC.
+- Las redes se asocian con la rama de TI.
+
+El sistema preguntará al usuario si esta interesado en algunos de estos temas.
+El usuario puede responder si, si esta interesado, regular, si le interesa pero
+no especialmente y no, si el tema no le interesa para nada.
+
+Por cada respuesta que obtenga, el sistema asignara a cada rama una puntuación
+de recomendación, el sistema recomendará una rama siempre que esta puntuación
+supere 5. Esto significa que al menos le ha gustado un tema o le han gustado
+levemente 3 de ellos.
+
+Después de obtener una respuesta, el sistema pregunta si el usuario ha terminado,
+si ha terminado recomendará una rama con la información de la que dispone
+ actualmente, si no, seguirá preguntando para obtener más información.
+
+Si durante este proceso el sistema determina que la puntuación asignada a una
+rama es suficientemente alta, recomienda directamente esa rama, suponiendo que
+es la que mas le interesa al usuario.
+
+Finalmente el sistema muestra los motivos por los cuales recomienda una rama.

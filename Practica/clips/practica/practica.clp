@@ -420,7 +420,7 @@
    (declare (salience 100))
    (final)
    (Consejo ?r ?p)
-   (test (neq ?p 0))
+   (test (neq ?p 5))
    (Relacion ?m ?r)
    (Gusta ?m si)
    =>
@@ -431,7 +431,7 @@
    (declare (salience 90))
    (final)
    (Consejo ?r ?p)
-   (test (neq ?p 0))
+   (test (neq ?p 5))
    (Relacion ?m ?r)
    (Gusta ?m regular)
    =>
