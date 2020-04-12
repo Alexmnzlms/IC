@@ -333,6 +333,62 @@
 ;   (printout t "Te gusta " ?m " " ?n crlf)
 ;)
 
+(defrule CSI_max
+   (declare (salience 10))
+   (Consejo CSI ?n)
+   (test (eq ?n 15))
+   ?f <- (terminar)
+   =>
+   (printout t "He detectado que CSI puede ser la mejor rama" crlf)
+   (assert (terminado si))
+   (retract ?f)
+)
+
+(defrule IS_max
+   (declare (salience 10))
+   (Consejo IS ?n)
+   (test (eq ?n 10))
+   ?f <- (terminar)
+   =>
+   (printout t "He detectado que IS puede ser la mejor rama" crlf)
+   (assert (terminado si))
+   (retract ?f)
+)
+
+(defrule IC_max
+   (declare (salience 10))
+   (Consejo IC ?n)
+   (test (eq ?n 10))
+   ?f <- (terminar)
+   =>
+   (printout t "He detectado que IC puede ser la mejor rama" crlf)
+   (assert (terminado si))
+   (retract ?f)
+)
+
+(defrule SI_max
+   (declare (salience 10))
+   (Consejo SI ?n)
+   (test (eq ?n 10))
+   ?f <- (terminar)
+   =>
+   (printout t "He detectado que SI puede ser la mejor rama" crlf)
+   (assert (terminado si))
+   (retract ?f)
+)
+
+(defrule TI_max
+   (declare (salience 10))
+   (Consejo TI ?n)
+   (test (eq ?n 5))
+   ?f <- (terminar)
+   =>
+   (printout t "He detectado que TI puede ser la mejor rama" crlf)
+   (assert (terminado si))
+   (retract ?f)
+)
+
+
 (defrule Preguntar_Final
    (declare (salience 1))
    ?f <- (terminar)
