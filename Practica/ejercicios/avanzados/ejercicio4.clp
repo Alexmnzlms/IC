@@ -1,9 +1,10 @@
+;;; Primeramente se establecen los contadores a 0
 (deffacts hechos
    (Hecho leer 0)
    (Hecho correr 0)
    (Preguntar)
 )
-
+;;; Se pregunta por una accion para contar
 (defrule Pregunta
    (declare (salience 10))
    ?f <- (Preguntar)
@@ -12,7 +13,7 @@
    (assert (ContarHechos (read)))
    (retract ?f)
 )
-
+;;; Se cuentan las acciones, se borra hecho n y se establece hecho n+1
 (defrule leer
    ?f <- (ContarHechos leer)
    ?g <- (Hecho leer ?n)

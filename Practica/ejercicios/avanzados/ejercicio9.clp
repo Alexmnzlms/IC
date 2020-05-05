@@ -1,3 +1,4 @@
+;;; Se establece el hecho leer
 (deffacts leer
    (leer)
 )
@@ -17,6 +18,7 @@
    (retract ?f)
    (if (neq ?valor EOF) then
    (assert (Dato ?valor))
+   ;;; Se imprimen los valores que se van leyendo
    (printout t ?valor crlf)
    (assert (SeguirLeyendo)))
 )

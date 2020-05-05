@@ -1,3 +1,4 @@
+;;; Por defecto se establece el texto que se quiere escribir
 (deffacts escribir
    (escribir Hola esto es una prueba de escritura a fichero utilizando clips)
 )

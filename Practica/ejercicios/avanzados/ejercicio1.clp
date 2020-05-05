@@ -1,8 +1,11 @@
+;;; Por defecto se establece que no hay opcion elegida y que se tiene que preguntar
 (deffacts Inicio
    (preguntar)
    (OpcionElegida Nada)
 )
 
+;;; Regla que solicita los datos
+;;; Establece el hecho OpcionElegida XXX
 (defrule Solicitar_datos
    (declare (salience 10))
    ?p <- (OpcionElegida ?o)
@@ -18,6 +21,7 @@
    (retract ?f ?p)
 )
 
+;;; Diferentes reglas segun la opción elegida
 (defrule Elegido_Nacidos
    (OpcionElegida Nacidos_de_la_bruma)
    =>
@@ -49,7 +53,7 @@
    (printout t crlf)
    (assert (preguntar))
 )
-
+;;; Si se elige salir no se reinicia el bucle
 (defrule Elegido_Salir
    (OpcionElegida salir)
    =>
