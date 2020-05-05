@@ -1,7 +1,7 @@
 *.pdf
-Practica/clips/clips_core_source_630/*
-Practica/clips/examples_631/*
-Practica/clips/ReadMe630.md
+Practica/clips_core_source_630/*
+Practica/examples_631/*
+Practica/ReadMe630.md
 *.txt
 *.zip
 *.sh
