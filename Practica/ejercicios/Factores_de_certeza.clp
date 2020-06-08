@@ -22,7 +22,7 @@
 (defrule certeza_evidencias
    (Evidencia ?e ?r)
    =>
-   (assert(FactorCerteza?e ?r 1))
+   (assert(FactorCerteza ?e ?r 1))
 )
 
 ;; También podríamos considerar evidencias con una cierta
