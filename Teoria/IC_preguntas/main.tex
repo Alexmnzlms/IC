@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Revisión de la documentación sobre Integración de CLISP en C y Python}
+\author{Alejandro Manzanares Lemus}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\date{}
+
+\begin{document}
+
+\maketitle
+\textbf{¿Cómo se instala CLIPSPy?}\\
+Se instala a través de pip o compilándolo manualmente
+\\\\
+\textbf{¿Se pueden evaluar en Python (mediante CLIPSPy) expresiones de CLIPS? ¿Cómo?}\\
+Se puede.\\
+Utilizando el método eval() de la clase clips.environment.Environment
+\\\\
+\textbf{Mediante CLIPSPy se pueden utilizar dentro de CLISP funciones de pythom. ¿Cómo se hace?}\\
+Con el método define\_function() de la clase clips.environment.Environment
+\\\\
+\textbf{¿Qué métodos de CLIPSPy asertan y retractan un hecho en CLISP?}\\
+Se puede asertar un string con el metodo assert\_string de la clase clips.environment.Environment\\
+También con los  assertit() y retract() de la clase clips.facts.Fact().
+\\\\
+\textbf{¿Cómo se ejecutaría en Python (mediante CLIPSPy) un sistema basado en reglas definido mediante un fichero .clp?}\\
+Mediante el método load de la clase clips.environment.Enviroment()  y run de la clase clips.agenda.Agenda()
+\\\\
+\textbf{Describe brevemente como convertirías un sistema basado en reglas definido mediante un fichero .clp en un fichero ejecutable}\\
+Incluyendo clips.h en un fichero en C\\
+// creamos el entorno\\
+void * entorno = CreateEnvironment();\\
+// cargamos el clp\\
+EnvLoad(entorno, “fichero.clp”)\\
+// lo ejecutamos\\
+EnvRun(entorno, -1)\\
+Y compilándolo en C con gcc\\
+\\\\
+\newpage
+\textbf{Describe brevemente cómo incluirías en CLISP una función definida en C}\\
+Con la función int EnvDefineFunction(environment,functionName,functionType,\\functionPointer,actualFunctionName);
+\\\\
+\textbf{Describe brevemente cómo incluirías un sistema basado en reglas definido mediante un fichero .clp dentro de tu programa escrito en C.}\\
+Incluyendo clips.h en un fichero en C\\
+// creamos el entorno\\
+void * entorno = CreateEnvironment();\\
+// cargamos el clp\\
+EnvLoad(entorno, “fichero.clp”)\\
+// lo ejecutamos\\
+EnvRun(entorno, -1)\\
+Y compilándolo en C con gcc\\
+\\\\
+\textbf{¿Que funciones se utilizan para asertar o retractar un hecho en un sistema basado en reglas embebido en un programa de C?}\\
+ EnvAssert y EnvRetract para asertar y rechazar o EnvAssertString para asertar un string como regla
+\\\\
+\textbf{¿Se pueden ejecutar varios sistemas basados en reglas distintos dentro de un mismo programa de C?}\\
+Creando varios entornos:\\
+// creamos el entorno\\
+void * entorno = CreateEnvironment();\\
+void * entorno1 = CreateEnvironment();\\
+// cargamos el clp\\
+EnvLoad(entorno, “fichero.clp”);\\
+EnvLoad(entorno1, “fichero1.clp”);\\
+// lo ejecutamos\\
+EnvRun(entorno, -1);\\
+EnvRun(entorno1, -1);\\
+
+\end{document}
