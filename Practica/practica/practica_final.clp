@@ -1,3 +1,10 @@
+(defrule elegir_modulo
+   (declare (salience 10000))
+   =>
+   (printout t "Sobre que necesitas consejor: [rama/asig]" crlf)
+   (assert (modulo (read)))
+)
+
 ;;;; Representamos las posibles ramas a recomendar.
 (deffacts Ramas
    (rama CSI)
@@ -38,7 +45,7 @@
    (explicacion videojuegos "te gustan los videojuegos")
    (explicacion robotica "te gustan la robotica")
    (explicacion red "te gustan las redes")
-   (explicacion por_defecto " no tengo suficiente información para no recomendarte esta rama, puesto que siempre puedes descubrir algo nuevo")
+   (explicacion por_defecto "no tengo suficiente información para no recomendarte esta rama, puesto que siempre puedes descubrir algo nuevo")
 )
 
 (deffacts Explicacion_consejo
@@ -57,13 +64,6 @@
 ;;;; (gusta mates si)
 ;;;; Y si ha respondido que le gusta la regular programar registra
 ;;;;(gusta programar regular)
-
-(defrule elegir_modulo
-   (declare (salience 10000))
-   =>
-   (printout t "Sobre que necesitas consejor: [rama/asig]" crlf)
-   (assert (modulo (read)))
-)
 
 (defrule Consejo_por_defecto
    (declare (salience 1000))
@@ -233,13 +233,14 @@
 (defrule Motivos_consejo_por_defecto
    (declare (salience 1))
    (modulo rama)
-   ?g <- (consejo ?R por_defecto)
+   (consejo ?R por_defecto)
    ?f <- (expl_consejo ?R ?expl)
    (explicacion por_defecto ?motivo)
+   (not (defecto ?R))
    =>
    (bind ?texto (str-cat ?expl ?motivo))
-   (assert (expl_consejo ?R ?texto))
-   (retract ?g ?f)
+   (assert (expl_consejo ?R ?texto) (defecto ?R))
+   (retract ?f)
 )
 
 (defrule Motivos_consejo
