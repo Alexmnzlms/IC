@@ -193,7 +193,7 @@
    (modulo rama)
    (gusta ?r ?n)
    =>
-   (printout t "gusta " ?r " " ?n crlf)
+   ; (printout t "gusta " ?r " " ?n crlf)
 )
 
 (defrule Razonar_gusto_rama
@@ -203,7 +203,7 @@
    (relacion ?r ?R)
    =>
    (assert (gusta_rama ?r ?R ?n))
-   (printout t "gusta_rama " ?r " " ?R " " ?n crlf)
+   ; (printout t "gusta_rama " ?r " " ?R " " ?n crlf)
 
 )
 
@@ -215,7 +215,7 @@
    =>
    (retract ?g)
    (assert (consejo ?R no))
-   (printout t "consejo " ?R " no" crlf)
+   ; (printout t "consejo " ?R " no" crlf)
 )
 
 (defrule Razonar_consejo_si
@@ -227,7 +227,7 @@
    =>
    (retract ?g)
    (assert (consejo ?R si))
-   (printout t "consejo " ?R " si" crlf)
+   ; (printout t "consejo " ?R " si" crlf)
 )
 
 (defrule Motivos_consejo_por_defecto
@@ -364,7 +364,7 @@
    (relacion desarrollo FBD)
 )
 
-(deffacts Explicaciones
+(deffacts Explicaciones_asig
    (explicacion mates "te gustan las matematicas")
    (explicacion programar "te gusta programar")
    (explicacion hardware "te gustan el hardware")
@@ -374,7 +374,7 @@
    (explicacion primero "esta asignatura es de primero y por tanto conviene hacerla")
 )
 
-(deffacts Explicacion_consejo
+(deffacts Explicacion_consejo_asig
    (expl_consejo ALEM "")
    (expl_consejo CA "")
    (expl_consejo FP "")
@@ -578,88 +578,88 @@
    (modulo asig)
    ?g <- (gusta_tipo mates ?a)
    ?fc <- (FactorCerteza ?a ?f)
-   ?f <- (expl_consejo ?a ?expl)
-   (explicacion programar ?motivo)
+   ?e <- (expl_consejo ?a ?expl)
+   (explicacion mates ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
    (assert (FactorCerteza ?a (combinacion ?f 0.75)) (expl_consejo ?a ?texto))
-   (retract ?fc ?g ?f)
+   (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_programar
    (modulo asig)
    ?g <- (gusta_tipo programar ?a)
    ?fc <- (FactorCerteza ?a ?f)
-   ?f <- (expl_consejo ?a ?expl)
+   ?e <- (expl_consejo ?a ?expl)
    (explicacion programar ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
    (assert (FactorCerteza ?a (combinacion ?f 0.65)) (expl_consejo ?a ?texto))
-   (retract ?fc ?g ?f)
+   (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_hardware
    (modulo asig)
    ?g <- (gusta_tipo hardware ?a)
    ?fc <- (FactorCerteza ?a ?f)
-   ?f <- (expl_consejo ?a ?expl)
+   ?e <- (expl_consejo ?a ?expl)
    (explicacion hardware ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
    (assert (FactorCerteza ?a (combinacion ?f 0.8)) (expl_consejo ?a ?texto))
-   (retract ?fc ?g ?f)
+   (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_teoria
    (modulo asig)
    ?g <- (gusta_tipo teoria ?a)
    ?fc <- (FactorCerteza ?a ?f)
-   ?f <- (expl_consejo ?a ?expl)
+   ?e <- (expl_consejo ?a ?expl)
    (explicacion teoria ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
    (assert (FactorCerteza ?a (combinacion ?f 0.65)) (expl_consejo ?a ?texto))
-   (retract ?fc ?g ?f)
+   (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_practica
    (modulo asig)
    ?g <- (gusta_tipo practica ?a)
    ?fc <- (FactorCerteza ?a ?f)
-   ?f <- (expl_consejo ?a ?expl)
+   ?e <- (expl_consejo ?a ?expl)
    (explicacion practica ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
    (assert (FactorCerteza ?a (combinacion ?f 0.35)) (expl_consejo ?a ?texto))
-   (retract ?fc ?g ?f)
+   (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_primero
    (modulo asig)
    ?g <- (primero ?a)
    ?fc <- (FactorCerteza ?a ?f)
-   ?f <- (expl_consejo ?a ?expl)
+   ?e <- (expl_consejo ?a ?expl)
    (explicacion primero ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
    (assert (FactorCerteza ?a (combinacion ?f 0.5)) (expl_consejo ?a ?texto))
-   (retract ?fc ?g ?f)
+   (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_software
    (modulo asig)
    ?g <- (gusta_tipo software ?a)
    ?fc <- (FactorCerteza ?a ?f)
-   ?f <- (expl_consejo ?a ?expl)
+   ?e <- (expl_consejo ?a ?expl)
    (explicacion software ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
    (assert (FactorCerteza ?a (combinacion ?f 0.8)) (expl_consejo ?a ?texto))
-   (retract ?fc ?g ?f)
+   (retract ?fc ?g ?e)
 )
 
 (defrule Factores_certeza
-   (declare (salience -100))
+   (declare (salience -90))
    (modulo asig)
    (FactorCerteza ?r ?n)
    =>
@@ -667,39 +667,34 @@
 )
 
 
-(defrule Expl_razonada
-   (declare (salience -10))
-   (modulo rama)
-   (consejo ?R ?n)
-   (test (or (eq ?n si) (eq ?n por_defecto)))
-   (expl_consejo ?R ?expl)
-   =>
-   (printout t "Te aconsejo " ?R " porque " ?expl " - Manza" crlf)
-)
-
 (defrule Factores_certeza_muy_seguro
    (declare (salience -100))
    (modulo asig)
-   (FactorCerteza ?r ?n)
+   ?f <- (FactorCerteza ?r ?n)
    (test (>= ?n 0.8))
+   (expl_consejo ?r ?expl)
    =>
-   (printout t "Te recomiendo muchisimo " ?r crlf)
+   (printout t "Te recomiendo muchisimo " ?r " porque " ?expl " - Manza" crlf)
+   (retract ?f)
 )
 
 (defrule Factores_certeza_seguro
    (declare (salience -100))
    (modulo asig)
-   (FactorCerteza ?r ?n)
+   ?f <- (FactorCerteza ?r ?n)
    (test (>= ?n 0.5))
+   (expl_consejo ?r ?expl)
    =>
-   (printout t "Te aconsejo " ?r crlf)
+   (printout t "Te aconsejo " ?r " porque " ?expl " - Manza" crlf)
+   (retract ?f)
 )
 
 (defrule Factores_certeza_no_seguro
    (declare (salience -100))
    (modulo asig)
-   (FactorCerteza ?r ?n)
+   ?f <- (FactorCerteza ?r ?n)
    (test (< ?n 0.5))
    =>
-   (printout t "No te aconsejo " ?r crlf)
+   (printout t "No te aconsejo " ?r " - Manza" crlf)
+   (retract ?f)
 )
