@@ -101,7 +101,7 @@ Las varibales de entrada de este SBC son le numero de créditos que proporciona 
 \subsection{Variables de salida}
 Las variables de salida son en esta caso, los factores de certeza para recomendar cada asignatura. Esto se representa mediante el hecho (FactorCerteza ?asignatura ?certeza). También es una variable de salida el motivo por el cual se realiza la recomendación. Esto se representa con el hecho (expl\_consejo ?asignatura ?explicacion).
 \subsection{Conocimiento global del sistema}
-Inicialmente se deben establecer las asignaturas mediante el hecho (asignatura ?asignatura) y el nombre de esta mediante (nombre ?asignatura ?nombre). Después se establece que asignaturas son de primero mediante el hecho (primero ?asignatura). También se establecen las relaciones entre las distintas características de cada asignatura por las que se preguntan con las asignaturas a las que corresponden mediante el hecho (relacion ?elemento ?asignatura). Finalmente se establecen las explicaciones de cada características mediante (explicacion ?elemento ?explicacion) y los motivos por los cuales se recomienda cada asignatura (expl\_consejo ?asignatura ""). También se establece un hecho de control (maximo_necesario) y el modulo inicial (modulo créditos).
+Inicialmente se deben establecer las asignaturas mediante el hecho (asignatura ?asignatura) y el nombre de esta mediante (nombre ?asignatura ?nombre). Después se establece que asignaturas son de primero mediante el hecho (primero ?asignatura). También se establecen las relaciones entre las distintas características de cada asignatura por las que se preguntan con las asignaturas a las que corresponden mediante el hecho (relacion ?elemento ?asignatura). Finalmente se establecen las explicaciones de cada características mediante (explicacion ?elemento ?explicacion) y los motivos por los cuales se recomienda cada asignatura (expl\_consejo ?asignatura ""). También se establece un hecho de control (maximo\_necesario) y el modulo inicial (modulo créditos).
 \subsection{Módulos}
 \subsubsection{Estructura}
 Este SBC cuenta con un total de 7 módulos. Estos módulos son: créditos, asignaturas, intereses, preguntas, gusto, certeza y razonar certeza.
@@ -109,35 +109,43 @@ Este SBC cuenta con un total de 7 módulos. Estos módulos son: créditos, asign
 \begin{itemize}
    \item Modulo créditos: Este modulo se encarga de solicitar al usuario el numero de créditos y calcular las asignaturas correspondientes. También controla que el numero de créditos establecido no sea mayor que el máximo posible (30 en este caso, que son los créditos máximos por cuatrimestre).
    \\\\
-   \textbf{Reglas que utiliza}:
+   \textbf{Reglas que utiliza}: La regla Numero\_de\_asignaturas pregunta por el numero de créditos. La regla Creditos simplemente muestra el calculo que se ha hecho y establece un contador para las asignaturas a solicitar. Creditos\_exceso es una regla que rompe el flujo de ejecución mediante el hecho (exceso) si el numero de créditos se ha excedido. Contador\_maximo es una regla necesaria para posteriormente obtener el factor de certeza máximo. Fin\_creditos es la regla que permite pasar al siguiente modulo.
 
-   \item Modulo asignaturas:
+   \item Modulo asignaturas: Este modulo se encarga de pedir asignaturas al usuario. Se ha implementado un contador de manera que el usuario tenga que introducir tantas asignaturas como asignaturas se hayan establecido por créditos. Aun así, puede introducir hasta un máximo de 10 asignaturas.
    \\\\
-   \textbf{Reglas que utiliza}:
+   \textbf{Reglas que utiliza}: Pedir\_asignaturas se encarga de solicitar una asignatura y establece el hecho de control (confirmar ?asignatura) que sirve para que no se establezca intereses por una asignatura que no esta almacenada. Confirmar\_asignatura y Confirmar\_asignatura\_max son las reglas que confirman que la asignatura existe y asertan el hecho (interes ?asignatura) y controlan el contador. Existen dos funciones porque una sirve para establecer (terminar_asig) y llamar a la regla Terminar\_asig\_max que pregunta si se ha terminado de introducir asignaturas una vez superado el mínimo. Las reglas Confirmar\_asignatura\_no\_valida y Confirmar\_asignatura\_no\_valida\_max sirve  para que si se introduce una asignatura no valida esta no tenga efecto en el sistema. Finalmente Fin\_asignaturas permite pasar al siguiente modulo.
 
-   \item Modulo intereses:
+   \item Modulo intereses: Este modulo es sencillo y simplemente se encarga de establecer el factor de certeza de las asignaturas por las que se ha mostrado interés.
    \\\\
-   \textbf{Reglas que utiliza}:
+   \textbf{Reglas que utiliza}: Intereses establece el hecho (FactorCerteza ?asignatura 0) para cada (interes ?asignatura). Fin\_intereses sirve para pasar al siguiente modulo.
 
-   \item Modulo preguntas:
+   \item Modulo preguntas: Este modulo funciona de manera muy similar al modulo con el mismo nombre del SBC recomendador de rama. Con la diferencia que ahora existen solo 6 preguntas
+
+   \item Modulo gusto: Una vez se ha obtenido los gustos del usuario, este modulo se encarga de establecer el hecho (gusta\_tipo ?elemento ?asignatura) que establece una relación entre las asignaturas de interés y los elementos que el usuario ha indicado como de su gusto.
    \\\\
-   \textbf{Reglas que utiliza}:
+   \textbf{Reglas que utiliza}: La regla Razonar\_gusto se encarga de realizar el procedimiento antes mencionado. Fin\_gusto permite pasar al siguiente modulo.
 
-   \item Modulo gusto:
+   \item Modulo certeza: Este modulo es el encargado de razonar el factor de certeza que se debe aplicar a cada asignatura. Para cada elemento se establece un factor de certeza de la siguiente manera: $1 - \frac{nº de asignaturas relacionadas con el elemento}{nº total de asignaturas}$. De esta manera se establece que un elemento con menor numero de asignaturas asociadas indica que si al usuario le gusta este elemento es muy probable que las asignaturas relacionadas con el le gusten mucho. Si hay muchas asignaturas relacionadas este factor será mas pequeño. Se utiliza la función de combinación que se proporcionó en el ejercicio sobre factores de certeza.
    \\\\
-   \textbf{Reglas que utiliza}:
+   \textbf{Reglas que utiliza}: Las reglas Certeza\_* se encargan de combinar el factor de certeza actual de una asignatura con el factor asociado a un elemento concreto. También actualizan los motivos de la recomendación en caso de que esta llegue a realizarse. La regla Fin\_certeza permite pasar al siguiente modulo.
 
-   \item Modulo certeza:
+   \item Modulo razonar\_certeza: Este modulo se encarga de recomendar tantas asignaturas como asignaturas se hayan establecido a través de créditos. Para esto selecciona la asignatura con un valor de certeza máximo y se lo devuelve al usuario de manera reiterada utilizando un contador.
    \\\\
-   \textbf{Reglas que utiliza}:
-
-   \item Modulo razonar\_certeza:
-   \\\\
-   \textbf{Reglas que utiliza}:
-
+   \textbf{Reglas que utiliza}:La regla Factor\_maximo se encarga de razonar la asignatura con un factor de certeza máximo. Factores\_certeza\_muy\_seguro Y Factores\_certeza\_seguro se encargan de recomendar al usuario las asignaturas escogidas y mostrar los motivos por los que se realiza la recomendación. Se considera que el SBC esta seguro si el factor es superior al 50\% y esta muy seguro si es superior al 80\%. Si no, se activa la regla Factores\_certeza\_no\_seguro que se encarga de no recomendar una asignatura en el caso de ser necesario.
 
 \end{itemize}
 
 
-
 \chapter{Manual de uso}
+Finalmente se adjunta un manual de uso:
+\begin{itemize}
+   \item Lo primero que solicita el programa es que se establezca si queremos ser aconsejados sobre la rama que escoger o sobre las asignaturas.
+   \item Si seleccionamos rama, el sistema comenzara a realizar preguntas de si o no y cada vez que respondamos nos preguntara si queremos terminar. Si le decimos que si, el sistema realizará una recomendación con información imperfecta, mientras que si le decimos que no, continuara preguntando hasta que las preguntas se agoten y el sistema devuelve su recomendación final.
+   \item Si seleccionamos asig, deberemos hacer lo siguiente:
+   \begin{itemize}
+      \item Se nos mostrará un resumen de las asignaturas disponibles.
+      \item Primero introducir un numero de créditos (por ejemplo 18).
+      \item Después debemos proporcionar el numero de asignaturas necesario (3 en nuestro ejemplo) o proporcionar asignaturas hasta un máximo de 10.
+      \item Si llegamos al máximo o decidimos responder si a la pregunta de si hemos terminado, el sistema comenzara a hacernos preguntas y después de cada pregunta nos preguntara si hemos terminado. Si le decimos que si, realizará una recomendación con información incompleta, pero si agotamos las preguntas, finalmente nos recomendara tantas asignaturas como asignaturas se hayan establecido por créditos.
+   \end{itemize}
+\end{itemize}
