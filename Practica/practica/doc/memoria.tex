@@ -44,15 +44,15 @@ Este SBC implementa un razonamiento basado en factores de certeza. Se establece 
 \section{Validación y verificación}
 Para validar el sistema y comprobar su correcto funcionamiento, se han realizado una serie de pruebas.
 \\\\
-El sistema de recomendación de ramas, funciona correctamente, dado que es capaz de proporcionar una recomendación por defecto. También es capaz de no recomendar una rama ninguna de las características que la definen le gusta al usuario mientras que si alguna le gusta, recomienda la rama dando las explicaciones correctas.
+El sistema de recomendación de ramas, funciona correctamente, dado que es capaz de proporcionar una recomendación por defecto. También es capaz de no recomendar una rama si ninguna de las características que la definen le gusta al usuario mientras que si alguna le gusta, recomienda la rama dando las explicaciones correctas.
 \\\\
-El sistema de recomendación de asignaturas también funciona correctamente. Dado una cantidad de cretidos es capaz de calcular cuantas asignaturas necesita y se las solicita al usuario. También es capaz de aceptar más asignaturas si el usuario así lo quiere. Razona correctamente el factor de certeza para recomendar una asignatura según los gustos del usuario. Finalmente es capaz de recomendar tantas asignaturas como créditos se le hayan proporcionado, además de dar los motivos por los cuales los hace la recomendación.
+El sistema de recomendación de asignaturas también funciona correctamente. Dado una cantidad de créditos es capaz de calcular cuantas asignaturas necesita y se las solicita al usuario. También es capaz de aceptar más asignaturas si el usuario así lo quiere. Razona correctamente el factor de certeza para recomendar una asignatura según los gustos del usuario. Finalmente es capaz de recomendar tantas asignaturas como créditos se le hayan proporcionado, además de dar los motivos por los cuales los hace la recomendación.
 
 \chapter{Descripción del sistema}
 Los sistemas funcionan de la siguiente manera:
 \begin{itemize}
    \item Recomendador de rama: El sistemas realiza una serie de preguntas y en base a las respuestas que de el usuario, mejor es la recomendación que aporta, pudiendo obtener una recomendación con información incompleta.
-   \item Recomendador de asignatura: El sistema solicita un numero de créditos y calcula a cuantas asignaturas corresponde. Después pregunta al usuario por las asignaturas sobre las que quiere ser aconsejado. A continuación pregunta por los gustos del usuario y razona el grado de recomendación de cada asignatura. Finalmente recomienda tantas asignaturas como antes había calculado en base a los créditos proporcionados.
+   \item Recomendador de asignatura: El sistema solicita un número de créditos y calcula a cuantas asignaturas corresponde. Después pregunta al usuario por las asignaturas sobre las que quiere ser aconsejado. A continuación pregunta por los gustos del usuario y razona el grado de recomendación de cada asignatura. Finalmente recomienda tantas asignaturas como antes había calculado en base a los créditos proporcionados.
 \end{itemize}
 \section{Recomendador de rama}
 \subsection{Variables de entrada}
@@ -61,35 +61,35 @@ Las variables de entrada de este SBC son los gustos del usuario. Estos se repres
 Las variables de salida son si una rama se aconseja o no, o si esta se aconseja por defecto. Esto se representa mediante los hechos (consejo ?rama ?(si/no/por\_defecto)). También es una variable de salida la explicación de la recomendación. Esto se representa mediante los hechos (expl\_consejo ?rama ?explicacion)
 \subsection{Conocimiento global del sistema}
 Para este SBC se deben establecer las ramas que existen mediante el hecho (rama ?rama), también la relación entre un elemento y la rama a la que se lo asocia (relación ?elemento ?rama). También debemos asertar la explicación asociada a cada elemento mediante el hecho (explicación ?elemento ?explicacion).\\
-Por ultimo establecemos vacía la recomendación de cada rama mediante (expl\_consejo ?rama "").\\
-También establecemos por defecto el modulo inicial que se ejecutará mediante (modulo ?modulo).
+Por último establecemos vacía la recomendación de cada rama mediante (expl\_consejo ?rama "").\\
+También establecemos por defecto el módulo inicial que se ejecutará mediante (modulo ?modulo).
 \subsection{Módulos}
 \subsubsection{Estructura}
 Este SBC cuenta con un total de 6 módulos que se ejecutan de manera secuencial. Existen los módulos de: razonamiento por defecto, preguntas, razonamiento, consejo, motivos y explicación.
 
 \subsubsection{Descripción, hechos y reglas}
 \begin{itemize}
-   \item Modulo razonamiento\_por\_defecto: Este modulo establece el hecho (consejo ?rama por\_defecto) para establecer el razonamiento por defecto del SBC.
+   \item Módulo razonamiento\_por\_defecto: Este módulo establece el hecho (consejo ?rama por\_defecto) para establecer el razonamiento por defecto del SBC.
    \\\\
    \textbf{Reglas que utiliza}: Consejo\_por\_defecto es la regla encargada de establecer el consejo por defecto y Comenzar\_preguntas se encarga de pasar al siguiente módulo.
 
-   \item Modulo preguntas: Este modulo simplemente trata de las reglas necesarias para realizar preguntas al usuario y obtener la información. Cada pregunta aserta un hecho (gusta ?elemento ?(si/no)). También contiene las reglas necesarias para poder cortar el flujo de preguntas en cualquier momento.
+   \item Módulo preguntas: Este módulo simplemente trata de las reglas necesarias para realizar preguntas al usuario y obtener la información. Cada pregunta aserta un hecho (gusta ?elemento ?(si/no)). También contiene las reglas necesarias para poder cortar el flujo de preguntas en cualquier momento.
    \\\\
-   \textbf{Reglas que utiliza}: Las reglas Primera\_pregunta hasta Decima\_pregunta funcionan de la misma manera, simplemente preguntan al usuario por su gusto por un elemento concreto y asertan el hecho (gusta ?elemento (read)) con la respuesta del usuario. También se utiliza el hecho (terminar) para controlar que se ejecute la regla Preguntar\_Final que simplemente pregunta si quiere terminar de responder preguntas. Si la respuesta es si, se aserta el hecho (terminado si) que impide que se realicen más preguntas. La regla Final\_preguntas simplemente sirve para pasar al siguiente modulo.
+   \textbf{Reglas que utiliza}: Las reglas Primera\_pregunta hasta Decima\_pregunta funcionan de la misma manera, simplemente preguntan al usuario por su gusto por un elemento concreto y asertan el hecho (gusta ?elemento (read)) con la respuesta del usuario. También se utiliza el hecho (terminar) para controlar que se ejecute la regla Preguntar\_Final que simplemente pregunta si quiere terminar de responder preguntas. Si la respuesta es si, se aserta el hecho (terminado si) que impide que se realicen más preguntas. La regla Final\_preguntas simplemente sirve para pasar al siguiente módulo.
 
-   \item Modulo razonamiento: Este modulo contiene las reglas necesarias para razonar en base a los hechos (gusta ?elemento ?(si/no)) y (relación ?elemento ?rama), el hecho de que al usuario le guste o no un elemento especifico de cada rama mediante el hecho (gusta\_rama ?elemento ?rama ?(si/no)).
+   \item Módulo razonamiento: Este módulo contiene las reglas necesarias para razonar en base a los hechos (gusta ?elemento ?(si/no)) y (relación ?elemento ?rama), el hecho de que al usuario le guste o no un elemento especifico de cada rama mediante el hecho (gusta\_rama ?elemento ?rama ?(si/no)).
    \\\\
-   \textbf{Reglas que utiliza}: Razonar\_gusto\_rama sirve para realizar el razonamiento previamente comentado y Fin\_razonamiento sirve para cambiar de modulo.
+   \textbf{Reglas que utiliza}: Razonar\_gusto\_rama sirve para realizar el razonamiento previamente comentado y Fin\_razonamiento sirve para cambiar de módulo.
 
-   \item Modulo consejo: Este modulo es el encargado de razonar si una rama se aconseja o no. Esto se establece mediante el hecho (consejo ?rama ?(si/no)).
+   \item Módulo consejo: Este módulo es el encargado de razonar si una rama se aconseja o no. Esto se establece mediante el hecho (consejo ?rama ?(si/no)).
    \\\\
-   \textbf{Reglas que utiliza}: Las reglas Razonar\_consejo y Razonar\_consejo\_si se encargan de razonar si se debe o no recomendar una rama. Cuando existe el hecho (gusta ?elemento ?rama ?si), se activa Razonar\_consejo\_si y se recomienda esta rama. Razonar\_consejo es una regla que sirve para eliminar el consejo por defecto e inferir que no se debe recomendar una rama. Fin\_consejos sirve para pasar al siguiente modulo.
+   \textbf{Reglas que utiliza}: Las reglas Razonar\_consejo y Razonar\_consejo\_si se encargan de razonar si se debe o no recomendar una rama. Cuando existe el hecho (gusta ?elemento ?rama ?si), se activa Razonar\_consejo\_si y se recomienda esta rama. Razonar\_consejo es una regla que sirve para eliminar el consejo por defecto e inferir que no se debe recomendar una rama. Fin\_consejos sirve para pasar al siguiente módulo.
 
-   \item Modulo motivos: Este modulo es capaz de inferir los motivos por los cuales se aconseja una rama.
+   \item Módulo motivos: Este módulo es capaz de inferir los motivos por los cuales se aconseja una rama.
    \\\\
-   \textbf{Reglas que utiliza}: Motivos\_consejo\_por\_defecto establece los motivos de la recomendación por defecto y Motivos\_consejo establece los motivos por los cuales se recomienda una rama según las respuestas del usuario. Fin\_motivos sirve para pasar al modulo final.
+   \textbf{Reglas que utiliza}: Motivos\_consejo\_por\_defecto establece los motivos de la recomendación por defecto y Motivos\_consejo establece los motivos por los cuales se recomienda una rama según las respuestas del usuario. Fin\_motivos sirve para pasar al módulo final.
 
-   \item Modulo explicación: Este modulo simplemente le muestra al usuario las ramas que se recomiendan y el por que de esta recomendación.
+   \item Módulo explicación: Este módulo simplemente le muestra al usuario las ramas que se recomiendan y el por que de esta recomendación.
    \\\\
    \textbf{Reglas que utiliza}: Expl\_razonada es la regla que simplemente muestra información al usuario.
 
@@ -97,39 +97,39 @@ Este SBC cuenta con un total de 6 módulos que se ejecutan de manera secuencial.
 
 \section{Recomendador de asignaturas}
 \subsection{Variables de entrada}
-Las varibales de entrada de este SBC son le numero de créditos que proporciona el usuario, que se traduce al numero de asignaturas para las que necesita consejo. Esto se representa con el hecho (n\_asig ?numero). También es una variable de entrada las asignaturas sobre las que el usuario esta interesado. Esto se almacena mediante el hecho (interes ?asignatura). Por ultimo, al igual que en el recomendador de rama, es necesario almacenar los gustos del usuario respecto al tipo de asignatura, esto se almacena mediante (gusta ?elemento ?(si/no)).
+Las variables de entrada de este SBC son el número de créditos que proporciona el usuario, que se traduce al número de asignaturas para las que necesita consejo. Esto se representa con el hecho (n\_asig ?numero). También es una variable de entrada las asignaturas sobre las que el usuario esta interesado. Esto se almacena mediante el hecho (interes ?asignatura). Por último, al igual que en el recomendador de rama, es necesario almacenar los gustos del usuario respecto al tipo de asignatura, esto se almacena mediante (gusta ?elemento ?(si/no)).
 \subsection{Variables de salida}
 Las variables de salida son en esta caso, los factores de certeza para recomendar cada asignatura. Esto se representa mediante el hecho (FactorCerteza ?asignatura ?certeza). También es una variable de salida el motivo por el cual se realiza la recomendación. Esto se representa con el hecho (expl\_consejo ?asignatura ?explicacion).
 \subsection{Conocimiento global del sistema}
-Inicialmente se deben establecer las asignaturas mediante el hecho (asignatura ?asignatura) y el nombre de esta mediante (nombre ?asignatura ?nombre). Después se establece que asignaturas son de primero mediante el hecho (primero ?asignatura). También se establecen las relaciones entre las distintas características de cada asignatura por las que se preguntan con las asignaturas a las que corresponden mediante el hecho (relacion ?elemento ?asignatura). Finalmente se establecen las explicaciones de cada características mediante (explicacion ?elemento ?explicacion) y los motivos por los cuales se recomienda cada asignatura (expl\_consejo ?asignatura ""). También se establece un hecho de control (maximo\_necesario) y el modulo inicial (modulo créditos).
+Inicialmente se deben establecer las asignaturas mediante el hecho (asignatura ?asignatura) y el nombre de esta mediante (nombre ?asignatura ?nombre). Después se establece que asignaturas son de primero mediante el hecho (primero ?asignatura). También se establecen las relaciones entre las distintas características de cada asignatura por las que se preguntan con las asignaturas a las que corresponden mediante el hecho (relacion ?elemento ?asignatura). Finalmente se establecen las explicaciones de cada características mediante (explicacion ?elemento ?explicacion) y los motivos por los cuales se recomienda cada asignatura (expl\_consejo ?asignatura ""). También se establece un hecho de control (maximo\_necesario) y el módulo inicial (modulo créditos).
 \subsection{Módulos}
 \subsubsection{Estructura}
 Este SBC cuenta con un total de 7 módulos. Estos módulos son: créditos, asignaturas, intereses, preguntas, gusto, certeza y razonar certeza.
 \subsubsection{Descripción, hechos y reglas}
 \begin{itemize}
-   \item Modulo créditos: Este modulo se encarga de solicitar al usuario el numero de créditos y calcular las asignaturas correspondientes. También controla que el numero de créditos establecido no sea mayor que el máximo posible (30 en este caso, que son los créditos máximos por cuatrimestre).
+   \item Módulo créditos: Este módulo se encarga de solicitar al usuario el número de créditos y calcular las asignaturas correspondientes. También controla que el número de créditos establecido no sea mayor que el máximo posible (30 en este caso, que son los créditos máximos por cuatrimestre).
    \\\\
-   \textbf{Reglas que utiliza}: La regla Numero\_de\_asignaturas pregunta por el numero de créditos. La regla Creditos simplemente muestra el calculo que se ha hecho y establece un contador para las asignaturas a solicitar. Creditos\_exceso es una regla que rompe el flujo de ejecución mediante el hecho (exceso) si el numero de créditos se ha excedido. Contador\_maximo es una regla necesaria para posteriormente obtener el factor de certeza máximo. Fin\_creditos es la regla que permite pasar al siguiente modulo.
+   \textbf{Reglas que utiliza}: La regla Numero\_de\_asignaturas pregunta por el número de créditos. La regla Creditos simplemente muestra el calculo que se ha hecho y establece un contador para las asignaturas a solicitar. Creditos\_exceso es una regla que rompe el flujo de ejecución mediante el hecho (exceso) si el número de créditos se ha excedido. Contador\_maximo es una regla necesaria para posteriormente obtener el factor de certeza máximo. Fin\_creditos es la regla que permite pasar al siguiente módulo.
 
-   \item Modulo asignaturas: Este modulo se encarga de pedir asignaturas al usuario. Se ha implementado un contador de manera que el usuario tenga que introducir tantas asignaturas como asignaturas se hayan establecido por créditos. Aun así, puede introducir hasta un máximo de 10 asignaturas.
+   \item Módulo asignaturas: Este módulo se encarga de pedir asignaturas al usuario. Se ha implementado un contador de manera que el usuario tenga que introducir tantas asignaturas como asignaturas se hayan establecido por créditos. Aun así, puede introducir hasta un máximo de 10 asignaturas.
    \\\\
-   \textbf{Reglas que utiliza}: Pedir\_asignaturas se encarga de solicitar una asignatura y establece el hecho de control (confirmar ?asignatura) que sirve para que no se establezca intereses por una asignatura que no esta almacenada. Confirmar\_asignatura y Confirmar\_asignatura\_max son las reglas que confirman que la asignatura existe y asertan el hecho (interes ?asignatura) y controlan el contador. Existen dos funciones porque una sirve para establecer (terminar\_asig) y llamar a la regla Terminar\_asig\_max que pregunta si se ha terminado de introducir asignaturas una vez superado el mínimo. Las reglas Confirmar\_asignatura\_no\_valida y Confirmar\_asignatura\_no\_valida\_max sirve  para que si se introduce una asignatura no valida esta no tenga efecto en el sistema. Finalmente Fin\_asignaturas permite pasar al siguiente modulo.
+   \textbf{Reglas que utiliza}: Pedir\_asignaturas se encarga de solicitar una asignatura y establece el hecho de control (confirmar ?asignatura) que sirve para que no se establezca intereses por una asignatura que no esta almacenada. Confirmar\_asignatura y Confirmar\_asignatura\_max son las reglas que confirman que la asignatura existe y asertan el hecho (interes ?asignatura) y controlan el contador. Existen dos funciones porque una sirve para establecer (terminar\_asig) y llamar a la regla Terminar\_asig\_max que pregunta si se ha terminado de introducir asignaturas una vez superado el mínimo. Las reglas Confirmar\_asignatura\_no\_valida y Confirmar\_asignatura\_no\_valida\_max sirve  para que si se introduce una asignatura no valida esta no tenga efecto en el sistema. Finalmente Fin\_asignaturas permite pasar al siguiente módulo.
 
-   \item Modulo intereses: Este modulo es sencillo y simplemente se encarga de establecer el factor de certeza de las asignaturas por las que se ha mostrado interés.
+   \item Módulo intereses: Este módulo es sencillo y simplemente se encarga de establecer el factor de certeza de las asignaturas por las que se ha mostrado interés.
    \\\\
-   \textbf{Reglas que utiliza}: Intereses establece el hecho (FactorCerteza ?asignatura 0) para cada (interes ?asignatura). Fin\_intereses sirve para pasar al siguiente modulo.
+   \textbf{Reglas que utiliza}: Intereses establece el hecho (FactorCerteza ?asignatura 0) para cada (interes ?asignatura). Fin\_intereses sirve para pasar al siguiente módulo.
 
-   \item Modulo preguntas: Este modulo funciona de manera muy similar al modulo con el mismo nombre del SBC recomendador de rama. Con la diferencia que ahora existen solo 6 preguntas
+   \item Módulo preguntas: Este módulo funciona de manera muy similar al módulo con el mismo nombre del SBC recomendador de rama. Con la diferencia que ahora existen solo 6 preguntas.
 
-   \item Modulo gusto: Una vez se ha obtenido los gustos del usuario, este modulo se encarga de establecer el hecho (gusta\_tipo ?elemento ?asignatura) que establece una relación entre las asignaturas de interés y los elementos que el usuario ha indicado como de su gusto.
+   \item Módulo gusto: Una vez se ha obtenido los gustos del usuario, este módulo se encarga de establecer el hecho (gusta\_tipo ?elemento ?asignatura) que establece una relación entre las asignaturas de interés y los elementos que el usuario ha indicado como de su gusto.
    \\\\
-   \textbf{Reglas que utiliza}: La regla Razonar\_gusto se encarga de realizar el procedimiento antes mencionado. Fin\_gusto permite pasar al siguiente modulo.
+   \textbf{Reglas que utiliza}: La regla Razonar\_gusto se encarga de realizar el procedimiento antes mencionado. Fin\_gusto permite pasar al siguiente módulo.
 
-   \item Modulo certeza: Este modulo es el encargado de razonar el factor de certeza que se debe aplicar a cada asignatura. Para cada elemento se establece un factor de certeza de la siguiente manera: \\$1 - \frac{nº de asignaturas relacionadas con el elemento}{nº total de asignaturas}$\\ De esta manera se establece que un elemento con menor numero de asignaturas asociadas indica que si al usuario le gusta este elemento es muy probable que las asignaturas relacionadas con el le gusten mucho. Si hay muchas asignaturas relacionadas este factor será mas pequeño. Se utiliza la función de combinación que se proporcionó en el ejercicio sobre factores de certeza.
+   \item Módulo certeza: Este módulo es el encargado de razonar el factor de certeza que se debe aplicar a cada asignatura. Para cada elemento se establece un factor de certeza de la siguiente manera: \\$1 - \frac{n\_de\_asignaturas\_relacionadas\_con\_el\_elemento}{n\_total\_de\_asignaturas}$\\ De esta manera se establece que un elemento con menor número de asignaturas asociadas indica que si al usuario le gusta este elemento es muy probable que las asignaturas relacionadas con el le gusten mucho. Si hay muchas asignaturas relacionadas este factor será mas pequeño. Se utiliza la función de combinación que se proporcionó en el ejercicio sobre factores de certeza.
    \\\\
-   \textbf{Reglas que utiliza}: Las reglas Certeza\_* se encargan de combinar el factor de certeza actual de una asignatura con el factor asociado a un elemento concreto. También actualizan los motivos de la recomendación en caso de que esta llegue a realizarse. La regla Fin\_certeza permite pasar al siguiente modulo.
+   \textbf{Reglas que utiliza}: Las reglas Certeza\_* se encargan de combinar el factor de certeza actual de una asignatura con el factor asociado a un elemento concreto. También actualizan los motivos de la recomendación en caso de que esta llegue a realizarse. La regla Fin\_certeza permite pasar al siguiente módulo.
 
-   \item Modulo razonar\_certeza: Este modulo se encarga de recomendar tantas asignaturas como asignaturas se hayan establecido a través de créditos. Para esto selecciona la asignatura con un valor de certeza máximo y se lo devuelve al usuario de manera reiterada utilizando un contador.
+   \item Módulo razonar\_certeza: Este módulo se encarga de recomendar tantas asignaturas como asignaturas se hayan establecido a través de créditos. Para esto selecciona la asignatura con un valor de certeza máximo y se lo devuelve al usuario de manera reiterada utilizando un contador.
    \\\\
    \textbf{Reglas que utiliza}:La regla Factor\_maximo se encarga de razonar la asignatura con un factor de certeza máximo. Factores\_certeza\_muy\_seguro Y Factores\_certeza\_seguro se encargan de recomendar al usuario las asignaturas escogidas y mostrar los motivos por los que se realiza la recomendación. Se considera que el SBC esta seguro si el factor es superior al 50\% y esta muy seguro si es superior al 80\%. Si no, se activa la regla Factores\_certeza\_no\_seguro que se encarga de no recomendar una asignatura en el caso de ser necesario.
 
@@ -144,8 +144,8 @@ Finalmente se adjunta un manual de uso:
    \item Si seleccionamos asig, deberemos hacer lo siguiente:
    \begin{itemize}
       \item Se nos mostrará un resumen de las asignaturas disponibles.
-      \item Primero introducir un numero de créditos (por ejemplo 18).
-      \item Después debemos proporcionar el numero de asignaturas necesario (3 en nuestro ejemplo) o proporcionar asignaturas hasta un máximo de 10.
+      \item Primero introducir un número de créditos (por ejemplo 18).
+      \item Después debemos proporcionar el número de asignaturas necesario (3 en nuestro ejemplo) o proporcionar asignaturas hasta un máximo de 10.
       \item Si llegamos al máximo o decidimos responder si a la pregunta de si hemos terminado, el sistema comenzara a hacernos preguntas y después de cada pregunta nos preguntara si hemos terminado. Si le decimos que si, realizará una recomendación con información incompleta, pero si agotamos las preguntas, finalmente nos recomendara tantas asignaturas como asignaturas se hayan establecido por créditos.
    \end{itemize}
 \end{itemize}
