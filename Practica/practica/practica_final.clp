@@ -1,3 +1,5 @@
+;;;; Autor: Alejandro Manzanares Lemus
+
 ;;;; Lo primero de todo es elegir el SBC
 (defrule elegir_recomendador
    (declare (salience 10000))
@@ -10,7 +12,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;; Representamos las posibles ramas a recomendar.
 (deffacts Ramas
    (rama CSI)
    (rama IS)
@@ -19,8 +20,6 @@
    (rama TI)
 )
 
-;;;; Establecemos la relación entre el tema que se pregunta y la rama a la que el
-;;;; tema hace referencia.
 (deffacts Relaciones
    (relacion mates CSI)
    (relacion programar CSI)
@@ -303,7 +302,7 @@
    (test (or (eq ?n si) (eq ?n por_defecto)))
    (expl_consejo ?R ?expl)
    =>
-   (printout t "Te aconsejo " ?R " porque " ?expl " - Manza" crlf)
+   (printout t "Te aconsejo " ?R " porque " ?expl " - Alejandro Manzanares" crlf)
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -469,9 +468,9 @@
 (deffacts Modulo_inicio_asig
    (modulo creditos)
 )
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftemplate FactorCerteza (slot asig) (slot certeza) )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deffunction combinacion (?fc1 ?fc2)
 (if (and (> ?fc1 0) (> ?fc2 0) )
@@ -900,7 +899,7 @@
    (expl_consejo ?r ?expl)
    (test (> ?c 0))
    =>
-   (printout t "Con la información obtenida, te recomiendo muchisimo " ?r " porque " ?expl " - Manza" crlf)
+   (printout t "Con la información obtenida, te recomiendo muchisimo " ?r " porque " ?expl " - Alejandro Manzanares" crlf)
    (assert (cont_asig (- ?c 1)) (maximo_necesario))
    (retract ?f ?cn)
 )
@@ -915,7 +914,7 @@
    (expl_consejo ?r ?expl)
    (test (> ?c 0))
    =>
-   (printout t "Con la información obtenida, te aconsejo " ?r " porque " ?expl " - Manza" crlf)
+   (printout t "Con la información obtenida, te aconsejo " ?r " porque " ?expl " - Alejandro Manzanares" crlf)
    (assert (cont_asig (- ?c 1)) (maximo_necesario))
    (retract ?f ?cn)
 )
@@ -929,7 +928,7 @@
    (test (< ?n 0.5))
    (test (> ?c 0))
    =>
-   (printout t "Con la información obtenida, no te aconsejo " ?r " - Manza" crlf)
+   (printout t "Con la información obtenida, no te aconsejo " ?r " - Alejandro Manzanares" crlf)
    (assert (cont_asig (- ?c 1)) (maximo_necesario))
    (retract ?f ?cn)
 )
