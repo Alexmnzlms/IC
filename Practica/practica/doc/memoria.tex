@@ -1,17 +1,66 @@
 \chapter{Sistema Experto}
+El sistema experto presentado sirve para asesorar a un alumno a la hora de escoger que mención realizar o que asignaturas matricularse.\\
+Esta divido en dos SBC:
+\begin{itemize}
+   \item Un SBC se encarga de aconsejar a un estudiante que mención de la carrera de Ingeniería Informática (de la UGR) debería escoger. Para esto realiza una serie de cuestiones al usuario de las cuales obtiene la información necesaria para realizar un consejo. Implementa un razonamiento por defecto y se trata de una mejora del SBC presentado en la práctica 1.
+   \item Otro SBC se encarga de seleccionar en que asignaturas debería matricularse un estudiante. Para esto, necesita que se le proporcione un número de créditos y las asignaturas sobre las que se tiene dudas. Una vez sabe esto, realiza una serie de preguntas al usuario a través de las cuales razona que asignaturas debe recomendar. Implementa un razonamiento basado en factores de certeza.
+\end{itemize}
 
+El funcionamiento detallado de los módulos de explicará en los siguientes apartados. También se aporta una guía de uso del sistema.
 
 \chapter{Proceso seguido}
 \section{Desarrollo de la base de conocimiento}
+Para el desarrollo de la base del conocimiento se ha utilizado la propia experiencia a la hora de diseñar el sistema:\\
+\\
+Para el SBC que recomienda en que rama debe matricularse un estudiante, se ha decidido establecer una serie de elementos que definen conceptos que pueden asociarse a cada rama. Un mismo elemento puede asociarse a varias ramas. Concretamente se definen los siguientes elementos:
+\begin{itemize}
+   \item Matemáticas: Se asocia a la rama de CSI.
+   \item Programar: Se asocia a la rama de CSI e IS.
+   \item Bases de datos: Se asocia a la rama de SI.
+   \item Hardware: Se asocia a la rama de IC.
+   \item Docencia: Se asocia a la rama de CSI y SI.
+   \item Web: Se asocia a la rama IS y TI.
+   \item Sistemas: Se asocia a la rama de IC y SI.
+   \item Videojuegos: Se asocia a la rama de IS.
+   \item Robótica: Se asocia a la rama de CSI e IC.
+   \item Red: Se asocia a la rama de TI.
+\end{itemize}
+Este SBC implementa un razonamiento por defecto para recomendar una rama. Por defecto se recomiendan todas las ramas dando un motivo por defecto. Se le pregunta al usuario si le gustan cada uno de los elementos anteriores. Si especifica que no le gusta un elemento asociado a una rama, no recomendará esa rama (eliminando la recomendación por defecto), pero siempre que le guste un elemento asociado a una rama, la recomendará dando los motivos por los que realiza la recomendación.\\
+\\
+Para el SBC que recomienda que asignaturas, se establecen una serie de características que pueden asociarse a asignaturas concretas:
+\begin{itemize}
+   \item Primero: Especifica las asignaturas que son de primero.
+   \item Hardware: Especifica las asignaturas que centran su contenido en torno a temas hardware.
+   \item Software: Especifica las asignaturas que se centran en desarrollo software.
+   \item Matemáticas: Especifica las asignaturas que tienen una gran carga matemática.
+   \item Programación: Especifica las asignaturas que tienen una gran carga de programación.
+   \item Teoría: Especifica las asignaturas que se centran más en la parte teórica que en la practica.
+   \item Practica: Especifica las asignaturas que centran más en la parte practica que en la teórica.
+\end{itemize}
+
+Se ha decidido limitar el conjunto de asignaturas a las asignaturas de primero y segundo curso, dado que son las asignaturas sobre las que más conocimiento posee el experto, dado que las ha cursado todas.
+Este SBC implenta un razonamiento basado en factores de certeza. Se establece a 0 la certeza de recomendar las asignaturas propuestas. Mediante una serie de preguntas, se establecen los gustos del usuario, aumentando el factor de certeza asociado a las asignaturas que especifican los gustos. A la hora de recomendar, se recomendara la asignatura si la certeza supera el 50\%.
+
 \section{Validación y verificación}
+Para validar el sistema y comprobar su correcto funcionamiento, se han realizado una serie de pruebas.
+\\\\
+El sistema de recomendación de ramas, funciona correctamente, dado que es capaz de proporcionar una recomendación por defecto. También es capaz de no recomendar una rama ninguna de las características que la definen le gusta al usuario mientras que si alguna le gusta, recomienda la rama dando las explicaciones correctas.
+\\\\
+El sistema de recomendación de asignaturas también funciona correctamente. Dado una cantidad de cretidos es capaz de calcular cuantas asignaturas necesita y se las solicita al usuario. También es capaz de aceptar más asignaturas si el usuario así lo quiere. Razona correctamente el factor de certeza para recomendar una asignatura según los gustos del usuario. Finalmente es capaz de recomendar tantas asignaturas como créditos se le hayan proporcionado, además de dar los motivos por los cuales los hace la recomendación.
 
 \chapter{Descripción del sistema}
+Los sistemas funcionan de la siguiente manera:
+\begin{itemize}
+   \item Recomendador de rama: El sistemas realiza una serie de preguntas y en base a las respuestas que de el usuario, mejor es la recomendación que aporta, pudiendo obtener una recomendación con información incompleta.
+   \item Recomendador de asignatura: El sistema solicita un numero de creditos y calcula a cuantas asignaturas corresponde. Despúes pregunta al usuario por las asignaturas sobre las que quiere ser aconsejado. 
+\end{itemize}
 \section{Variables de entrada}
 \section{Variables de salida}
 \section{Conocimiento global del sistema}
-\section{Modulos}
+\section{Módulos}
 \subsection{Estructura}
 \subsection{Descripción}
-\subsection{Hechos y reglas}
+\section{Hechos y reglas}
+
 
 \chapter{Manual de uso}

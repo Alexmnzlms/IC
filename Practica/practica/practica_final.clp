@@ -1,9 +1,14 @@
-(defrule elegir_modulo
+;;;; Lo primero de todo es elegir el SBC
+(defrule elegir_recomendador
    (declare (salience 10000))
    =>
-   (printout t "Sobre que necesitas consejor: [rama/asig]" crlf)
-   (assert (modulo (read)))
+   (printout t "Sobre que necesitas consejo: [rama/asig]" crlf)
+   (assert (recomendador (read)))
 )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;; Representamos las posibles ramas a recomendar.
 (deffacts Ramas
@@ -56,27 +61,34 @@
    (expl_consejo TI "")
 )
 
-;;;; El sistema hace una serie de preguntas al usuario, para conocer su grado de
-;;;; en los temas que corresponden a las ramas.
-;;;; Por cada pregunta, el sistema almacena la informacion que ha
-;;;; obtenido del usuario de la siguiente manera:
-;;;; Si ha repondido que le gustan las mates, el sistema registra el hecho
-;;;; (gusta mates si)
-;;;; Y si ha respondido que le gusta la regular programar registra
-;;;;(gusta programar regular)
-
+(deffacts Modulo_inicio_rama
+   (modulo razonamiento_por_defecto)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defrule Consejo_por_defecto
-   (declare (salience 1000))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo razonamiento_por_defecto)
    (rama ?r)
+   (not (consejo ?r por_defecto))
    =>
    (assert (consejo ?r por_defecto))
    ; (printout t "consejo " ?r " por_defecto" crlf)
 )
 
+(defrule Comenzar_preguntas
+   (recomendador rama)
+   ?f <- (modulo razonamiento_por_defecto)
+   =>
+   (assert (modulo preguntas))
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Primera_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gustan las mates? (si/no)" crlf)
@@ -84,8 +96,9 @@
 )
 
 (defrule Segunda_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gusta programar? (si/no)" crlf)
@@ -93,8 +106,9 @@
 )
 
 (defrule Tercera_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gusta las bases de datos? (si/no)" crlf)
@@ -102,8 +116,9 @@
 )
 
 (defrule Cuarta_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gusta el hardware? (si/no)" crlf)
@@ -111,8 +126,9 @@
 )
 
 (defrule Quinta_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gusta la docencia? (si/no)" crlf)
@@ -120,8 +136,9 @@
 )
 
 (defrule Sexta_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gusta las informatica relacionada con web? (si/no)" crlf)
@@ -129,8 +146,9 @@
 )
 
 (defrule Septima_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gusta la administracion de sistemas? (si/no)" crlf)
@@ -138,8 +156,9 @@
 )
 
 (defrule Octava_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gustan los videojuegos? (si/no)" crlf)
@@ -147,30 +166,29 @@
 )
 
 (defrule Novena_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
-   (printout t "Te gustan la robotica? (si/no)" crlf)
+   (printout t "Te gusta la robotica? (si/no)" crlf)
    (assert (gusta robotica (read)) (terminar))
 )
 
 (defrule Decima_pregunta
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    (not (terminado si))
    =>
    (printout t "Te gustan las redes (internet)? (si/no)" crlf)
    (assert (gusta red (read)) (terminado si))
 )
 
-
-;;;; Cada vez que se ha respondido al usuario, el sistema pregunta si ha terminado
-;;;; y por tanto si quiere recibir una recomendación con la informacion actual.
-
 (defrule Preguntar_Final
-   (declare (salience 100))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo preguntas)
    ?f <- (terminar)
    =>
    (printout t "¿Has terminado? (si/no)" crlf)
@@ -178,61 +196,72 @@
    (retract ?f)
 )
 
-;;;; Regla que define cuando se ha terminado de preguntar
-
-(defrule Terminar
-   (declare (salience 100))
-   (modulo rama)
+(defrule Final_preguntas
+   (recomendador rama)
+   ?m <- (modulo preguntas)
    (terminado si)
    =>
-   (assert (final))
-)
+   (retract ?m)
+   (assert (modulo razonamiento))
 
-(defrule Info_obtenida
-   (declare (salience 11))
-   (modulo rama)
-   (gusta ?r ?n)
-   =>
-   ; (printout t "gusta " ?r " " ?n crlf)
 )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defrule Razonar_gusto_rama
-   (declare (salience 10))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo razonamiento)
    (gusta ?r ?n)
    (relacion ?r ?R)
    =>
    (assert (gusta_rama ?r ?R ?n))
-   ; (printout t "gusta_rama " ?r " " ?R " " ?n crlf)
-
 )
 
+(defrule Fin_razonamiento
+   (recomendador rama)
+   ?f <- (modulo razonamiento)
+   =>
+   (assert (modulo consejo))
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Razonar_consejo
-   (declare (salience 5))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo consejo)
    (gusta_rama ?r ?R $? no)
    ?g <- (consejo ?R $? por_defecto)
    =>
    (retract ?g)
    (assert (consejo ?R no))
-   ; (printout t "consejo " ?R " no" crlf)
 )
 
 (defrule Razonar_consejo_si
-   (declare (salience 5))
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo consejo)
    (gusta_rama ?r ?R $? si)
    ?g <- (consejo ?R ?n)
    (test (neq ?n si))
    =>
    (retract ?g)
    (assert (consejo ?R si))
-   ; (printout t "consejo " ?R " si" crlf)
 )
 
+(defrule Fin_consejos
+   (recomendador rama)
+   ?f <- (modulo consejo)
+   =>
+   (assert (modulo motivos))
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Motivos_consejo_por_defecto
-   (declare (salience 1))
-   (modulo rama)
+   (declare (salience 2))
+   (recomendador rama)
+   (modulo motivos)
    (consejo ?R por_defecto)
    ?f <- (expl_consejo ?R ?expl)
    (explicacion por_defecto ?motivo)
@@ -244,7 +273,9 @@
 )
 
 (defrule Motivos_consejo
-   (modulo rama)
+   (declare (salience 1))
+   (recomendador rama)
+   (modulo motivos)
    ?g <- (gusta_rama ?r ?R $? si)
    (consejo ?R $? si)
    ?f <- (expl_consejo ?R ?expl)
@@ -255,9 +286,19 @@
    (retract ?g ?f)
 )
 
+(defrule Fin_motivos
+   (recomendador rama)
+   ?f <- (modulo motivos)
+   =>
+   (assert (modulo explicacion))
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Expl_razonada
-   (declare (salience -10))
-   (modulo rama)
+   ; (declare (salience -10))
+   (recomendador rama)
+   (modulo explicacion)
    (consejo ?R ?n)
    (test (or (eq ?n si) (eq ?n por_defecto)))
    (expl_consejo ?R ?expl)
@@ -381,20 +422,20 @@
 )
 
 (deffacts software
-   (relacion desarrollo FIS)
-   (relacion desarrollo PDOO)
-   (relacion desarrollo SO)
-   (relacion desarrollo SCD)
-   (relacion desarrollo FBD)
+   (relacion software FIS)
+   (relacion software PDOO)
+   (relacion software SO)
+   (relacion software SCD)
+   (relacion software FBD)
 )
 
 (deffacts Explicaciones_asig
    (explicacion mates "te gustan las matematicas")
    (explicacion programar "te gusta programar")
-   (explicacion hardware "te gustan el hardware")
-   (explicacion software "te gustan el desarrollo software")
-   (explicacion teoria "te gusta mas la teoria que la practica")
-   (explicacion practica "te gusta mas la practica que la teoria")
+   (explicacion hardware "te gusta el hardware")
+   (explicacion software "te gusta el desarrollo software")
+   (explicacion teoria "te gustan las asignaturas teoricas")
+   (explicacion practica "te gustan las asignaturas practicas")
    (explicacion primero "esta asignatura es de primero y por tanto conviene hacerla")
 )
 
@@ -425,6 +466,11 @@
    (maximo_necesario)
 )
 
+(deffacts Modulo_inicio_asig
+   (modulo creditos)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (deftemplate FactorCerteza (slot asig) (slot certeza) )
 
 (deffunction combinacion (?fc1 ?fc2)
@@ -438,27 +484,31 @@
          else
             (bind ?rv (/ (+ ?fc1 ?fc2) (- 1 (min (abs ?fc1) (abs ?fc2))) ))))
    ?rv)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defrule Cod_asig
-   (declare (salience 1001))
-   (modulo asig)
+   (declare (salience 100))
+   (recomendador asig)
    (nombre ?n ?N)
    =>
    (printout t "Puedes elegir: " ?n " - " ?N crlf)
 
 )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defrule Numero_de_asignaturas
-   (declare (salience 1000))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo creditos)
    =>
    (printout t "Dime el numero de creditos: " 30 " max" crlf)
    (assert (n_asig (integer (/ (read) 6 ))) (pedir_asignaturas))
 )
 
 (defrule Creditos
-   (declare (salience 1000))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo creditos)
    (n_asig ?n)
    (test(<= ?n 5))
    =>
@@ -468,8 +518,9 @@
 )
 
 (defrule Creditos_exceso
-   (declare (salience 1000))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo creditos)
    (n_asig ?n)
    (test(> ?n 5))
    =>
@@ -477,9 +528,29 @@
    (assert (exceso))
 )
 
+(defrule Contador_maximo
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo creditos)
+   (n_asig ?n)
+   =>
+   (assert (cont_asig ?n))
+)
+
+(defrule Fin_creditos
+   (recomendador asig)
+   ?f <- (modulo creditos)
+   =>
+   (assert (modulo asignaturas))
+   ; (printout t "Pasando a modulo asignaturas" crlf)
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Pedir_asignaturas
-   (declare (salience 100))
-   (modulo asig)
+   (declare (salience 2))
+   (recomendador asig)
+   (modulo asignaturas)
    (not (exceso))
    (not (terminado_asig si))
    ?f <- (pedir_asignaturas)
@@ -490,8 +561,9 @@
 )
 
 (defrule Confirmar_asignatura
-   (declare (salience 100))
-   (modulo asig)
+   (declare (salience 2))
+   (recomendador asig)
+   (modulo asignaturas)
    ?f <- (confirmar ?n)
    ?cn <- (contador ?c)
    (n_asig ?max)
@@ -504,8 +576,9 @@
 )
 
 (defrule Confirmar_asignatura_no_valida
-   (declare (salience 100))
-   (modulo asig)
+   (declare (salience 2))
+   (recomendador asig)
+   (modulo asignaturas)
    ?f <- (confirmar ?n)
    (contador ?c)
    (n_asig ?max)
@@ -517,8 +590,9 @@
 )
 
 (defrule Confirmar_asignatura_max
-   (declare (salience 100))
-   (modulo asig)
+   (declare (salience 2))
+   (recomendador asig)
+   (modulo asignaturas)
    ?f <- (confirmar ?n)
    ?cn <- (contador ?c)
    (n_asig ?max)
@@ -532,8 +606,9 @@
 )
 
 (defrule Confirmar_asignatura_no_valida_max
-   (declare (salience 100))
-   (modulo asig)
+   (declare (salience 2))
+   (recomendador asig)
+   (modulo asignaturas)
    ?f <- (confirmar ?n)
    (contador ?c)
    (n_asig ?max)
@@ -546,8 +621,9 @@
 )
 
 (defrule Terminar_asig_max
-   (declare (salience 2))
-   (modulo asig)
+   (declare (salience 1))
+   (modulo asignaturas)
+   (recomendador asig)
    ?f <- (terminar_asig)
    (not (exceso))
    =>
@@ -556,18 +632,40 @@
    (retract ?f)
 )
 
+(defrule Fin_asignaturas
+   (recomendador asig)
+   ?f <- (modulo asignaturas)
+   =>
+   (assert (modulo intereses))
+   ; (printout t "Pasando a modulo intereses" crlf)
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Intereses
-   (declare (salience 10))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo intereses)
    (interes ?n)
    =>
    (printout t "Te interesa " ?n crlf)
    (assert (FactorCerteza (asig ?n) (certeza 0)))
 )
 
+(defrule Fin_intereses
+   (recomendador asig)
+   ?f <- (modulo intereses)
+   =>
+   (assert (modulo preguntas))
+   ; (printout t "Pasando a modulo preguntas" crlf)
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Primera_pregunta_asig
    (declare (salience 1))
-   (modulo asig)
+   (recomendador asig)
+   (modulo preguntas)
    (not (exceso))
    (not (terminado si))
    =>
@@ -577,7 +675,8 @@
 
 (defrule Segunda_pregunta_asig
    (declare (salience 1))
-   (modulo asig)
+   (recomendador asig)
+   (modulo preguntas)
    (not (exceso))
    (not (terminado si))
    =>
@@ -587,7 +686,8 @@
 
 (defrule Tercera_pregunta_asig
    (declare (salience 1))
-   (modulo asig)
+   (recomendador asig)
+   (modulo preguntas)
    (not (exceso))
    (not (terminado si))
    =>
@@ -597,7 +697,8 @@
 
 (defrule Cuarta_pregunta_asig
    (declare (salience 1))
-   (modulo asig)
+   (recomendador asig)
+   (modulo preguntas)
    (not (exceso))
    (not (terminado si))
    =>
@@ -607,7 +708,8 @@
 
 (defrule Quinta_pregunta_asig
    (declare (salience 1))
-   (modulo asig)
+   (recomendador asig)
+   (modulo preguntas)
    (not (exceso))
    (not (terminado si))
    =>
@@ -617,7 +719,8 @@
 
 (defrule Sexta_pregunta_asig
    (declare (salience 1))
-   (modulo asig)
+   (recomendador asig)
+   (modulo preguntas)
    (not (exceso))
    (not (terminado si))
    =>
@@ -626,8 +729,9 @@
 )
 
 (defrule Terminar_asig
-   (declare (salience 2))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo preguntas)
    ?f <- (terminar)
    (not (exceso))
    =>
@@ -636,25 +740,41 @@
    (retract ?f)
 )
 
-; (defrule Info_obtenida
-;    (gusta ?r ?n)
-;    =>
-;    (printout t "gusta " ?r " " ?n crlf)
-; )
+(defrule Fin_preguntas_asig
+   (recomendador asig)
+   ?f <- (modulo preguntas)
+   (terminado si)
+   =>
+   (assert (modulo gusto))
+   ; (printout t "Pasando a modulo gusto" crlf)
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defrule Razonar_gusto
-   ; (declare (salience 10))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo gusto)
    (gusta ?r si)
    (relacion ?r ?a)
    (interes ?a)
    =>
    (assert (gusta_tipo ?r ?a))
-   ; (printout t "gusta_tipo " ?r " " ?a crlf)
 )
 
+(defrule Fin_gusto
+   (recomendador asig)
+   ?f <- (modulo gusto)
+   =>
+   (assert (modulo certeza))
+   (retract ?f)
+)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defrule Certeza_mates
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo certeza)
    ?g <- (gusta_tipo mates ?a)
    ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
@@ -666,7 +786,9 @@
 )
 
 (defrule Certeza_programar
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo certeza)
    ?g <- (gusta_tipo programar ?a)
    ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
@@ -678,7 +800,9 @@
 )
 
 (defrule Certeza_hardware
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo certeza)
    ?g <- (gusta_tipo hardware ?a)
    ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
@@ -690,7 +814,9 @@
 )
 
 (defrule Certeza_teoria
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo certeza)
    ?g <- (gusta_tipo teoria ?a)
    ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
@@ -702,7 +828,9 @@
 )
 
 (defrule Certeza_practica
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo certeza)
    ?g <- (gusta_tipo practica ?a)
    ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
@@ -714,7 +842,9 @@
 )
 
 (defrule Certeza_primero
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo certeza)
    ?g <- (primero ?a)
    ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
@@ -726,7 +856,9 @@
 )
 
 (defrule Certeza_software
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo certeza)
    ?g <- (gusta_tipo software ?a)
    ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
@@ -737,25 +869,18 @@
    (retract ?fc ?g ?e)
 )
 
-; (defrule Factores_certeza
-;    (declare (salience -90))
-;    (modulo asig)
-;    (FactorCerteza (asig ?r) (certeza ?n))
-;    =>
-;    (printout t "Factor de certeza de " ?r " es " ?n crlf)
-; )
-
-(defrule Contador_maximo
-   (declare (salience 1000))
-   (modulo asig)
-   (n_asig ?n)
-   (not (contador_max))
+(defrule Fin_certeza
+   (recomendador asig)
+   ?f <- (modulo certeza)
    =>
-   (assert (cont_asig ?n) (contador_max))
+   (assert (modulo razonar_certeza))
+   (retract ?f)
 )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defrule Factor_maximo
-   (declare (salience -1))
+   (declare (salience 2))
+   (modulo razonar_certeza)
    ?max <- (maximo_necesario)
    ?f <- (FactorCerteza (asig ?r) (certeza ?n))
    (not (FactorCerteza (certeza ?value2&:(> ?value2 ?n))))
@@ -765,44 +890,46 @@
    (retract ?max ?f)
 )
 
-
 (defrule Factores_certeza_muy_seguro
-   (declare (salience -100))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo razonar_certeza)
    ?cn <- (cont_asig ?c)
    ?f <- (maximo ?r ?n)
    (test (>= ?n 0.8))
    (expl_consejo ?r ?expl)
    (test (> ?c 0))
    =>
-   (printout t "Te recomiendo muchisimo " ?r " porque " ?expl " - Manza" crlf)
+   (printout t "Con la información obtenida, te recomiendo muchisimo " ?r " porque " ?expl " - Manza" crlf)
    (assert (cont_asig (- ?c 1)) (maximo_necesario))
    (retract ?f ?cn)
 )
 
 (defrule Factores_certeza_seguro
-   (declare (salience -100))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo razonar_certeza)
    ?cn <- (cont_asig ?c)
    ?f <- (maximo ?r ?n)
    (test (>= ?n 0.5))
    (expl_consejo ?r ?expl)
    (test (> ?c 0))
    =>
-   (printout t "Te aconsejo " ?r " porque " ?expl " - Manza" crlf)
+   (printout t "Con la información obtenida, te aconsejo " ?r " porque " ?expl " - Manza" crlf)
    (assert (cont_asig (- ?c 1)) (maximo_necesario))
    (retract ?f ?cn)
 )
 
 (defrule Factores_certeza_no_seguro
-   (declare (salience -100))
-   (modulo asig)
+   (declare (salience 1))
+   (recomendador asig)
+   (modulo razonar_certeza)
    ?cn <- (cont_asig ?c)
    ?f <- (maximo ?r ?n)
    (test (< ?n 0.5))
    (test (> ?c 0))
    =>
-   (printout t "No te aconsejo " ?r " - Manza" crlf)
+   (printout t "Con la información obtenida, no te aconsejo " ?r " - Manza" crlf)
    (assert (cont_asig (- ?c 1)) (maximo_necesario))
    (retract ?f ?cn)
 )
