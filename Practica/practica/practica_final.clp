@@ -31,13 +31,13 @@
    (explicacion mates "te gustan las matematicas")
    (explicacion programar "te gusta programar")
    (explicacion bases_de_datos "te gustan las bases de datos")
-   (explicacion hardware "te gustan el hardware")
-   (explicacion docencia "te gustan la dodencia")
+   (explicacion hardware "te gusta el hardware")
+   (explicacion docencia "te gusta la docencia")
    (explicacion web "te gusta la programación web o diseño web")
    (explicacion sistemas "te gusta la administracion de sistemas")
-   (explicacion videojuegos "te gustan los videoguejos")
-   (explicacion robotica "te gustan los robocs")
-   (explicacion red "te gustan las redes, te contaria un chiste UDP, pero igual no lo pillas")
+   (explicacion videojuegos "te gustan los videojuegos")
+   (explicacion robotica "te gustan la robotica")
+   (explicacion red "te gustan las redes")
    (explicacion por_defecto " no tengo suficiente información para no recomendarte esta rama, puesto que siempre puedes descubrir algo nuevo")
 )
 
@@ -71,7 +71,7 @@
    (rama ?r)
    =>
    (assert (consejo ?r por_defecto))
-   (printout t "consejo " ?r " por_defecto" crlf)
+   ; (printout t "consejo " ?r " por_defecto" crlf)
 )
 
 (defrule Primera_pregunta
@@ -292,6 +292,29 @@
    (asignatura IA)
 )
 
+(deffacts nombres
+   (nombre ALEM "Algebra Lineal y Estructuras Matematicas")
+   (nombre CA "Calculo")
+   (nombre FP "Fundamentos de la Programación")
+   (nombre FS "Fundamentos del Software")
+   (nombre FFT "Fundamentos Fisicos y Tecnologicos")
+   (nombre ES "Estadistica")
+   (nombre IES "Ingeniería Empresa y Sociedad")
+   (nombre LMD "Logica y Metodos Discretos")
+   (nombre MP "Metodologia de la Programación")
+   (nombre TOC "Tecnologia y Organizacion de Computadores")
+   (nombre SCD "Sistemas Concurrentes y Distribuidos")
+   (nombre SO "Sistemas Operativos")
+   (nombre ED "Estructura de Datos")
+   (nombre EC "Estructura de Computadores")
+   (nombre PDOO "Programación y Diseño Orientado a Objetos")
+   (nombre ALG "Algoritmica")
+   (nombre AC "Arquitectura de Computadores")
+   (nombre FBD "Fundamentos de Bases de Datos")
+   (nombre FIS "Fundamentos de la Ingeniería del Software")
+   (nombre IA "Inteligencia Artificial")
+)
+
 (deffacts primero
    (primero ALEM)
    (primero CA)
@@ -397,6 +420,12 @@
    (expl_consejo IA "")
 )
 
+(deffacts maximo
+   (maximo_necesario)
+)
+
+(deftemplate FactorCerteza (slot asig) (slot certeza) )
+
 (deffunction combinacion (?fc1 ?fc2)
 (if (and (> ?fc1 0) (> ?fc2 0) )
    then
@@ -409,11 +438,20 @@
             (bind ?rv (/ (+ ?fc1 ?fc2) (- 1 (min (abs ?fc1) (abs ?fc2))) ))))
    ?rv)
 
+(defrule Cod_asig
+   (declare (salience 1001))
+   (modulo asig)
+   (nombre ?n ?N)
+   =>
+   (printout t "Puedes elegir: " ?n " - " ?N crlf)
+
+)
+
 (defrule Numero_de_asignaturas
    (declare (salience 1000))
    (modulo asig)
    =>
-   (printout t "Dime el numero de creditos: " 60 " max" crlf)
+   (printout t "Dime el numero de creditos: " 30 " max" crlf)
    (assert (n_asig (integer (/ (read) 6 ))) (pedir_asignaturas))
 )
 
@@ -421,30 +459,29 @@
    (declare (salience 1000))
    (modulo asig)
    (n_asig ?n)
-   (test(<= ?n 10))
+   (test(<= ?n 5))
    =>
-   (printout t "Numero de asignatuas " ?n crlf)
-   (assert (contador ?n))
+   (printout t "Ahora dime asignaturas que te interesen" crlf)
+   (printout t "Minimo número de asignaturas: " ?n crlf)
+   (assert (contador 1))
 )
 
 (defrule Creditos_exceso
    (declare (salience 1000))
    (modulo asig)
    (n_asig ?n)
-   (test(>
-
-       ?n 10))
+   (test(> ?n 5))
    =>
    (printout t "NUMERO EXCESIVO DE CREDITOS " crlf)
-   (assert (contador 0) (exceso))
+   (assert (exceso))
 )
 
 (defrule Pedir_asignaturas
    (declare (salience 100))
    (modulo asig)
+   (not (exceso))
+   (not (terminado_asig si))
    ?f <- (pedir_asignaturas)
-   (contador ?c)
-   (test (neq 0 ?c))
    =>
    (retract ?f)
    (printout t "Dime una asignatura que te interese: " crlf)
@@ -456,13 +493,13 @@
    (modulo asig)
    ?f <- (confirmar ?n)
    ?cn <- (contador ?c)
-   (test (neq 0 ?c))
-   (asignatura ?m)
-   (test (eq ?m ?n))
+   (n_asig ?max)
+   (test (< ?c ?max))
+   (asignatura ?n)
    =>
    (retract ?f ?cn)
-   (printout t "Te quedan " (- ?c 1) " asignaturas" crlf)
-   (assert (interes ?m) (contador (- ?c 1)) (pedir_asignaturas))
+   (printout t "Llevas " ?c " asignaturas" crlf)
+   (assert (interes ?n) (contador (+ ?c 1)) (pedir_asignaturas))
 )
 
 (defrule Confirmar_asignatura_no_valida
@@ -470,11 +507,52 @@
    (modulo asig)
    ?f <- (confirmar ?n)
    (contador ?c)
-   (test (neq 0 ?c))
+   (n_asig ?max)
+   (test (< ?c ?max))
    =>
    (retract ?f)
    (printout t "Asignatura no valida" crlf)
    (assert (pedir_asignaturas))
+)
+
+(defrule Confirmar_asignatura_max
+   (declare (salience 100))
+   (modulo asig)
+   ?f <- (confirmar ?n)
+   ?cn <- (contador ?c)
+   (n_asig ?max)
+   (test (>= ?c ?max))
+   (test (< ?c 10))
+   (asignatura ?n)
+   =>
+   (retract ?f ?cn)
+   (printout t "Llevas " ?c " asignaturas [de max " 10 "]" crlf)
+   (assert (interes ?n) (contador (+ ?c 1)) (terminar_asig))
+)
+
+(defrule Confirmar_asignatura_no_valida_max
+   (declare (salience 100))
+   (modulo asig)
+   ?f <- (confirmar ?n)
+   (contador ?c)
+   (n_asig ?max)
+   (test (>= ?c ?max))
+   (test (< ?c 10))
+   =>
+   (retract ?f)
+   (printout t "Asignatura no valida" crlf)
+   (assert (terminar_asig))
+)
+
+(defrule Terminar_asig_max
+   (declare (salience 2))
+   (modulo asig)
+   ?f <- (terminar_asig)
+   (not (exceso))
+   =>
+   (printout t "¿Has terminado? (si/no)" crlf)
+   (assert (terminado_asig (read)) (pedir_asignaturas))
+   (retract ?f)
 )
 
 (defrule Intereses
@@ -483,7 +561,7 @@
    (interes ?n)
    =>
    (printout t "Te interesa " ?n crlf)
-   (assert (FactorCerteza ?n 0))
+   (assert (FactorCerteza (asig ?n) (certeza 0)))
 )
 
 (defrule Primera_pregunta_asig
@@ -577,124 +655,153 @@
 (defrule Certeza_mates
    (modulo asig)
    ?g <- (gusta_tipo mates ?a)
-   ?fc <- (FactorCerteza ?a ?f)
+   ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
    (explicacion mates ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
-   (assert (FactorCerteza ?a (combinacion ?f 0.75)) (expl_consejo ?a ?texto))
+   (assert (FactorCerteza (asig ?a) (certeza (combinacion ?f 0.75))) (expl_consejo ?a ?texto))
    (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_programar
    (modulo asig)
    ?g <- (gusta_tipo programar ?a)
-   ?fc <- (FactorCerteza ?a ?f)
+   ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
    (explicacion programar ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
-   (assert (FactorCerteza ?a (combinacion ?f 0.65)) (expl_consejo ?a ?texto))
+   (assert (FactorCerteza (asig ?a) (certeza (combinacion ?f 0.65))) (expl_consejo ?a ?texto))
    (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_hardware
    (modulo asig)
    ?g <- (gusta_tipo hardware ?a)
-   ?fc <- (FactorCerteza ?a ?f)
+   ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
    (explicacion hardware ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
-   (assert (FactorCerteza ?a (combinacion ?f 0.8)) (expl_consejo ?a ?texto))
+   (assert (FactorCerteza (asig ?a) (certeza (combinacion ?f 0.8))) (expl_consejo ?a ?texto))
    (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_teoria
    (modulo asig)
    ?g <- (gusta_tipo teoria ?a)
-   ?fc <- (FactorCerteza ?a ?f)
+   ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
    (explicacion teoria ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
-   (assert (FactorCerteza ?a (combinacion ?f 0.65)) (expl_consejo ?a ?texto))
+   (assert (FactorCerteza (asig ?a) (certeza (combinacion ?f 0.65))) (expl_consejo ?a ?texto))
    (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_practica
    (modulo asig)
    ?g <- (gusta_tipo practica ?a)
-   ?fc <- (FactorCerteza ?a ?f)
+   ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
    (explicacion practica ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
-   (assert (FactorCerteza ?a (combinacion ?f 0.35)) (expl_consejo ?a ?texto))
+   (assert (FactorCerteza (asig ?a) (certeza (combinacion ?f 0.35))) (expl_consejo ?a ?texto))
    (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_primero
    (modulo asig)
    ?g <- (primero ?a)
-   ?fc <- (FactorCerteza ?a ?f)
+   ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
    (explicacion primero ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
-   (assert (FactorCerteza ?a (combinacion ?f 0.5)) (expl_consejo ?a ?texto))
+   (assert (FactorCerteza (asig ?a) (certeza (combinacion ?f 0.5))) (expl_consejo ?a ?texto))
    (retract ?fc ?g ?e)
 )
 
 (defrule Certeza_software
    (modulo asig)
    ?g <- (gusta_tipo software ?a)
-   ?fc <- (FactorCerteza ?a ?f)
+   ?fc <- (FactorCerteza (asig ?a) (certeza ?f))
    ?e <- (expl_consejo ?a ?expl)
    (explicacion software ?motivo)
    =>
    (bind ?texto (str-cat ?expl ?motivo ", "))
-   (assert (FactorCerteza ?a (combinacion ?f 0.8)) (expl_consejo ?a ?texto))
+   (assert (FactorCerteza (asig ?a) (certeza (combinacion ?f 0.8))) (expl_consejo ?a ?texto))
    (retract ?fc ?g ?e)
 )
 
-(defrule Factores_certeza
-   (declare (salience -90))
+; (defrule Factores_certeza
+;    (declare (salience -90))
+;    (modulo asig)
+;    (FactorCerteza (asig ?r) (certeza ?n))
+;    =>
+;    (printout t "Factor de certeza de " ?r " es " ?n crlf)
+; )
+
+(defrule Contador_maximo
+   (declare (salience 1000))
    (modulo asig)
-   (FactorCerteza ?r ?n)
+   (n_asig ?n)
+   (not (contador_max))
    =>
-   (printout t "Factor de certeza de " ?r " es " ?n crlf)
+   (assert (cont_asig ?n) (contador_max))
+)
+
+(defrule Factor_maximo
+   (declare (salience -1))
+   ?max <- (maximo_necesario)
+   ?f <- (FactorCerteza (asig ?r) (certeza ?n))
+   (not (FactorCerteza (certeza ?value2&:(> ?value2 ?n))))
+   =>
+   (assert (maximo ?r ?n))
+   ; (printout t "maximo " ?r " " ?n crlf)
+   (retract ?max ?f)
 )
 
 
 (defrule Factores_certeza_muy_seguro
    (declare (salience -100))
    (modulo asig)
-   ?f <- (FactorCerteza ?r ?n)
+   ?cn <- (cont_asig ?c)
+   ?f <- (maximo ?r ?n)
    (test (>= ?n 0.8))
    (expl_consejo ?r ?expl)
+   (test (> ?c 0))
    =>
    (printout t "Te recomiendo muchisimo " ?r " porque " ?expl " - Manza" crlf)
-   (retract ?f)
+   (assert (cont_asig (- ?c 1)) (maximo_necesario))
+   (retract ?f ?cn)
 )
 
 (defrule Factores_certeza_seguro
    (declare (salience -100))
    (modulo asig)
-   ?f <- (FactorCerteza ?r ?n)
+   ?cn <- (cont_asig ?c)
+   ?f <- (maximo ?r ?n)
    (test (>= ?n 0.5))
    (expl_consejo ?r ?expl)
+   (test (> ?c 0))
    =>
    (printout t "Te aconsejo " ?r " porque " ?expl " - Manza" crlf)
-   (retract ?f)
+   (assert (cont_asig (- ?c 1)) (maximo_necesario))
+   (retract ?f ?cn)
 )
 
 (defrule Factores_certeza_no_seguro
    (declare (salience -100))
    (modulo asig)
-   ?f <- (FactorCerteza ?r ?n)
+   ?cn <- (cont_asig ?c)
+   ?f <- (maximo ?r ?n)
    (test (< ?n 0.5))
+   (test (> ?c 0))
    =>
    (printout t "No te aconsejo " ?r " - Manza" crlf)
-   (retract ?f)
+   (assert (cont_asig (- ?c 1)) (maximo_necesario))
+   (retract ?f ?cn)
 )
